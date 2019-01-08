@@ -98,7 +98,12 @@ def save_and_query(im,save_url,delete=False):
             pass
     return label
 
-
+def torch_to_saveable(im, save_url):
+    out_im = np.array(im)
+    out_im = im.reshape(im.shape[1], im.shape[2], im.shape[0])
+    out_im = np.maximum(np.minimum(out_im, np.zeros(out_im.shape) + 255), np.zeros(out_im.shape))
+    out_im = out_im.astype(np.uint8)
+    return out_im
 
 
 
