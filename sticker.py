@@ -42,12 +42,12 @@ def load_random_sticker(label):
     return sticker_url
 
 def sticker_attack(image_url, save_url, sticker_url=None, mode="full", label=None): 
-    if sticker_url == None:
-        if label == None: 
+    if sticker_url is None:
+        if label is  None:
             label = 5
         sticker_url = load_random_sticker(label)
         
-    elif label==None:
+    elif label is None:
         label = int(sticker_url.split("\\")[0])
         
     sticker_url = sticker_directory + "\\" + sticker_url  
@@ -65,24 +65,8 @@ def sticker_attack(image_url, save_url, sticker_url=None, mode="full", label=Non
     
     return None
     
-class sticker_generator():
-    def generate_pixels(self):
-        self.probarray = np.zeros((self.num_rows, self.num_rows, 3, 43))
-        for i in range(self.num_rows):
-            for j in range(self.num_rows):
-                for k in range(3):
-                    basic_im = np.copy(self.start)
-                    basic_im[self.fringe + i * self.stride:self.fringe + i * self.stride + self.pixelsize,
-                             self.fringe + j * self.stride:self.fringe + j * self.stride + self.pixelsize, k]=255
-                    prob=np.array(save_and_query(basic_im, "temp.png"))
-                    self.probarray[i,j,k]=prob - self.basic_prob
-                    self.queries += 1
-                    sleep(1)
-        try:
-            remove("temp.png")
-        except:
-            pass
-        return None
+class StickerGenerator:
+
     def __init__(self,  directory=sticker_directory, imagesize=64, pixelsize=3, fringe=17, stride=3,
                  start=np.zeros((64,64,3), dtype=np.uint8)):
         
@@ -99,9 +83,10 @@ class sticker_generator():
         self.queries=1
 
         self.num_rows=(self.imagesize - 2 * self.fringe) / self.stride - (self.pixelsize / self.stride - 1)
+        self.probarray = np.zeros((self.num_rows, self.num_rows, 3, 43))
         if self.num_rows.is_integer():
             self.num_rows = int(self.num_rows)
-            self.generate_pixels()
+            self._generate_pixels()
         else:
             print("Error: Image size - 2 * fringe and pixelsize should be dividable by stride")
             
@@ -109,10 +94,24 @@ class sticker_generator():
             remove("temp.png")
         except:
             pass
-        
-        return None
 
-                        
+
+    def _generate_pixels(self):
+        for i in range(self.num_rows):
+            for j in range(self.num_rows):
+                for k in range(3):
+                    basic_im = np.copy(self.start)
+                    basic_im[self.fringe + i * self.stride:self.fringe + i * self.stride + self.pixelsize,
+                             self.fringe + j * self.stride:self.fringe + j * self.stride + self.pixelsize, k]=255
+                    prob=np.array(save_and_query(basic_im, "temp.png"))
+                    self.probarray[i,j,k]=prob - self.basic_prob
+                    self.queries += 1
+                    sleep(1)
+        try:
+            remove("temp.png")
+        except:
+            pass
+        return None
     def make_sticker(self, label, title="", pixel_threshold=0.01, save_threshold=0.9):
 
         basic_im=np.copy(self.start)

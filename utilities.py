@@ -1,3 +1,4 @@
+# coding=utf-8
 from config import *
 import numpy as np
 from os import remove
@@ -13,7 +14,7 @@ classnamedict={'Zulässige Höchstgeschwindigkeit (20)':0,
                'Ende der Geschwindigkeitsbegrenzung (80)':6,
                'Zulässige Höchstgeschwindigkeit (100)':7,
                'Zulässige Höchstgeschwindigkeit (120)':8,
-               'Überholverbot für Kraftfahrzeuge aller Art':9,
+               ""'Überholverbot für Kraftfahrzeuge aller Art':9,
                'Überholverbot für Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5t':10,
                'Einmalige Vorfahrt':11,
                'Vorfahrt':12,
