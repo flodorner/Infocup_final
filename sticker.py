@@ -78,9 +78,10 @@ class sticker_generator():
                     self.probarray[i,j,k]=prob - self.basic_prob
                     self.queries += 1
                     sleep(1)
-                    
-        remove("temp.png")
-
+        try:
+            remove("temp.png")
+        except:
+            pass
         return None
     def __init__(self,  directory=sticker_directory, imagesize=64, pixelsize=3, fringe=17, stride=3,
                  start=np.zeros((64,64,3), dtype=np.uint8)):
@@ -104,7 +105,10 @@ class sticker_generator():
         else:
             print("Error: Image size - 2 * fringe and pixelsize should be dividable by stride")
             
-        remove("temp.png")
+        try:
+            remove("temp.png")
+        except:
+            pass
         
         return None
 
@@ -130,7 +134,10 @@ class sticker_generator():
             save(basic_im,save_url)
             print("Sticker saved under " + save_url)
             
-        remove("temp.png")
+        try:
+            remove("temp.png")
+        except:
+            pass
         
         return basic_im
    

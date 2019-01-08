@@ -91,7 +91,10 @@ def save_and_query(im,save_url,delete=False):
     save(im,save_url)
     label=np.array(query_to_labels(save_url))
     if delete==True:
-        remove("temp.png")
+        try:
+            remove("temp.png")
+        except:
+            pass
     return label
 
 
