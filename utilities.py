@@ -1,5 +1,6 @@
 from config import *
 import numpy as np
+from os import remove
 import requests
 from PIL import Image
 
@@ -69,11 +70,10 @@ def query_to_text(image_path):
     r = requests.post(URL, files=files, data=data)
     if r.status_code != 200:
         raise Exception(str(r.status_code) + ' ' + r.text)
-        return r.text
+    return r.text
     
 def query_to_labels(image_path):  
-    return class_labels_to_one_hot(query_to_text(image_path))
-   
+    return class_labels_to_one_hot(query_to_text(image_path))   
 
 def url_to_im(imurl):
     im = Image.open(imurl)
@@ -87,9 +87,11 @@ def save(im,save_url):
     save_im.save(save_url)
     return None
 
-def save_and_query(im,save_url):
+def save_and_query(im,save_url,delete=False):
     save(im,save_url)
     label=np.array(query_to_labels(save_url))
+    if delete==True:
+        remove("temp.png")
     return label
 
 
