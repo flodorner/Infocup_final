@@ -107,10 +107,19 @@ def save_and_query(im, save_url, delete=False):
     label = np.array(query_to_labels(save_url))
     if delete:
         try:
-            remove("temp.png")
+            remove("save_url")
         except:
             pass
     return label
+
+
+def query_with_labelnums(im_url):
+    dict = dict_parser(query_to_text(im_url))
+    for key in dict:
+        if dict[key] != 0:
+            prob = dict[key]
+            print(key + " (label " + str(classnamedict[key]) + "): " + str(prob))
+    return dict
 
 
 def torch_to_saveable(im):

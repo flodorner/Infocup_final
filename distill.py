@@ -4,9 +4,9 @@ import torch.nn.functional as F
 
 
 def create_distilled(device):
-    model = ResNet(num_Blocks=(3, 3, 3, 3), prefilter=3, output_dim=43, norm=False).to(device)
+    model = ResNet(num_Blocks=(1, 1, 1, 1), prefilter=7, output_dim=43, norm=False).to(device)
     model.load_state_dict(
-        torch.load("C:\\Users\\flodo\\Documents\\GitHub\\Infocup\\Models\\model_4x3_noisetrain365.pt"))
+        torch.load("C:\\Users\\flodo\\Documents\\GitHub\\Infocup\\Models\\model_1x4_noisetrain_pre7150.pt"))
     return model
 
 

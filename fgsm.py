@@ -1,10 +1,10 @@
 import torch
 from torch import optim, nn
 
-from utilities import torch_to_saveable, save_and_query
+from config import fgsm_specs as specs
+from utilities import torch_to_saveable, url_to_torch, save_and_query, query_to_labels, query_with_labelnums
 from distill import create_distilled
 import numpy as np
-# Update self dict from dict in config , Methode für plausibel zu updatende attribute (maybe keep them instead?)
 
 
 def project_l_inf(x, base, bound):
@@ -33,6 +33,27 @@ class FGSM:
         else:
             self.model = model
 
+        self.mode = specs["mode"]
+        self.bound = specs["bound"]
+        self.magnitude = specs["magnitude"]
+        self.max_fgsm_iterations = specs["max_fgsm_iterations"]
+        self.target_threshold = specs["target_threshold"]
+
+        self.fgsm_restart = specs["fgsm_restart"]
+        self.restart_max_amount = specs["restart_max_amount"]
+        self.restart_accuracy_bound = specs["restart_accuracy_bound"]
+
+        self.retrain_mode = specs["retrain_mode"]
+        self.retrain_lr = specs["retrain_lr"]
+        self.retrain_max_gradient_steps = specs["retrain_max_gradient_steps"]
+        self.retrain_threshold = specs["retrain_threshold"]
+
+    def reload_model(self, model):
+        if model is None:
+            self.model = create_distilled(self.device)
+        else:
+            self.model = model
+
     def get_label(self, im, target_label):
         self.model.eval()
         output = self.model(torch.tensor(im).to(self.device))
@@ -50,15 +71,15 @@ class FGSM:
 
         return im_grad
 
-    def fastgrad_step(self, im, target_label, base, mode, bound, magnitude=1):
+    def fastgrad_step(self, im, target_label, base):
         im_grad = self.get_gradient(im, target_label)
-        im = im + magnitude * np.sign(im_grad.cpu().detach().numpy())
-        if mode == "simple":
+        im = im + self.magnitude * np.sign(im_grad.cpu().detach().numpy())
+        if self.mode == "simple":
             pass
-        elif mode == "l_2":
-            im = project_l_2(im, base, bound)
-        elif mode == "l_inf":
-            im = project_l_inf(im, base, bound)
+        elif self.mode == "l_2":
+            im = project_l_2(im, base, self.bound)
+        elif self.mode == "l_inf":
+            im = project_l_inf(im, base, self.bound)
         else:
             print("no valid mode")
             return None
@@ -66,7 +87,7 @@ class FGSM:
         return im, self.get_label(im, target_label)
 
     def train_on_label(self, images, labels, target_label):
-        optimizer = optim.Adam(self.model.parameters(), lr=0.0001)
+        optimizer = optim.Adam(self.model.parameters(), lr=self.retrain_lr)
         label_num = len(labels[0])
         labels = labels[:, target_label]
         images = torch.from_numpy(images)
@@ -92,57 +113,56 @@ class FGSM:
 
         return loss_number
 
-    def adapt(self, image, label, target_label, threshold=0.0001, max_train_steps=50):
+    def adapt(self, im, label, target_label):
         i = 0
         error = 1
-        while error > threshold and i < max_train_steps:
+        while error > self.retrain_threshold and i < self.retrain_max_gradient_steps:
             i = i + 1
-            error = self.train_on_label(image, label, target_label)
-        print("MSE White vs Black Box")
+            error = self.train_on_label(im, label, target_label)
+        print("MSE White vs Black Box after retraining:")
         print(error)
         return i, error
 
-    def create_advers(self, im, target_label, base, mode, bound, maxsteps=25, target_threshold=0.9):
+    def create_advers(self, im, target_label, base):
         prob = 0
         steps = 0
-        while prob < target_threshold and steps < maxsteps:
+        while prob < self.target_threshold and steps < self.max_fgsm_iterations:
             steps += 1
-            im, prob = self.fastgrad_step(im, target_label, base, mode, bound)
+            im, prob = self.fastgrad_step(im, target_label, base)
         print("probability: Whitebox")
         print(prob)
         return im
 
-    def simple_attack(self, im, target_label, save_url, mode="simple", bound=None, start="original",
-                      target_threshold=0.99, retrain="last", retrain_threshold=0.0001, max_inner_steps=25,
-                      max_outer_steps=10, max_train_steps=10):
+    def attack_on_label(self, im_url, save_url, target_label,):
+        print()
+        im = url_to_torch(im_url)
         labels = save_and_query(torch_to_saveable(im[-1]), save_url).reshape(1, 43)
-        if bound is None:
-            if mode == "l_inf":
-                bound = 10
-            if mode == "l_2":
-                bound = 1000
         stop = False
         steps = 0
+
+        mse = (labels[-1][target_label] - self.get_label([im[-1]], target_label)) ** 2
         while stop is False:
             steps += 1
-            if retrain == "last":
-                self.adapt(np.array([im[-1]]), np.array([labels[-1]]), target_label, retrain_threshold, max_train_steps)
-            elif retrain == "full":
-                self.adapt(self.model, self.device, np.array(im), np.array(labels), target_label, retrain_threshold, max_train_steps)
-            elif retrain == "none":
+            print("step: " + str(steps))
+            print("MSE White vs Black Box before retraining:")
+            print(mse)
+            if self.retrain_mode == "last":
+                self.adapt(np.array([im[-1]]), np.array([labels[-1]]), target_label)
+            elif self.retrain_mode == "full":
+                self.adapt(self.model, self.device, np.array(im), np.array(labels), target_label)
+            elif self.retrain_mode == "none":
                 stop = True
             else:
-                print("Not a valid retrain method. Running once without retrain")
-                stop = True
-            if start == "original":
-                advers = self.create_advers([im[0]], target_label, [im[0]], mode, bound, maxsteps=max_inner_steps,
-                                            target_threshold=target_threshold).reshape((1, 3, 64, 64))
-            elif start == "last":
-                advers = self.create_advers([im[-1]], target_label, [im[0]], mode, bound, maxsteps=max_inner_steps,
-                                            target_threshold=target_threshold).reshape((1, 3, 64, 64))
+                print("Not a valid retrain method. Use \"full\" or \"last\" "
+                      "for retraining. Running once without retraining.")
+                break
+
+            if self.fgsm_restart == "original":
+                advers = self.create_advers([im[0]], target_label, [im[0]]).reshape((1, 3, 64, 64))
+            elif self.fgsm_restart == "last":
+                advers = self.create_advers([im[-1]], target_label, [im[0]]).reshape((1, 3, 64, 64))
             else:
                 print("start should be \"original\" or \"last\" ")
-                break
             im = np.concatenate((im, advers))
 
             new_label = save_and_query(torch_to_saveable(im[-1]), save_url).reshape(1, 43)
@@ -150,10 +170,23 @@ class FGSM:
             target = labels[-1][target_label]
             print("probability: Blackbox")
             print(target)
-            if target > target_threshold:
+            mse = (target - self.get_label([im[-1]], target_label))**2
+            print()
+            if target > self.target_threshold:
                 stop = True
                 print("found adversarial example")
-            if steps >= max_outer_steps:
+            if steps >= self.restart_max_amount  or mse < self.restart_accuracy_bound:
                 stop = True
                 print("convergence failed. relax bounds, increase loop length or start with another image!")
+        return None
+
+    def preview_im(self, im_url):
+        print("Labels with highest confidence:")
+        query_with_labelnums(im_url)
+        print("try attacking one of those labels!")
+
+    def simple_attack(self, im_url, save_url):
+        target_label = np.argmax(np.array(query_to_labels(im_url)))
+        print("attacking label " + str(target_label))
+        self.attack_on_label(im_url, save_url, target_label)
         return None
