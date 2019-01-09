@@ -1,10 +1,11 @@
 import torch
 from torch import optim, nn
+from os import remove
+import numpy as np
 
-from config import fgsm_specs as specs
+from config import FGSM_SPECS
 from utilities import torch_to_saveable, url_to_torch, save_and_query, query_to_labels, query_with_labelnums
 from distill import create_distilled
-import numpy as np
 
 
 def project_l_inf(x, base, bound):
@@ -21,6 +22,12 @@ def project_l_2(x, base, bound):
     return base + perturbation
 
 
+def preview_im(im_url):
+    print("Labels with highest confidence:")
+    query_with_labelnums(im_url)
+    print("try attacking one of those labels!")
+
+
 class FGSM:
     def __init__(self, model=None, cuda=True):
 
@@ -33,20 +40,21 @@ class FGSM:
         else:
             self.model = model
 
-        self.mode = specs["mode"]
-        self.bound = specs["bound"]
-        self.magnitude = specs["magnitude"]
-        self.max_fgsm_iterations = specs["max_fgsm_iterations"]
-        self.target_threshold = specs["target_threshold"]
+        self.mode = FGSM_SPECS["mode"]
+        self.bound = FGSM_SPECS["bound"]
+        self.magnitude = FGSM_SPECS["magnitude"]
+        self.max_fgsm_iterations = FGSM_SPECS["max_fgsm_iterations"]
+        self.target_threshold = FGSM_SPECS["target_threshold"]
 
-        self.fgsm_restart = specs["fgsm_restart"]
-        self.restart_max_amount = specs["restart_max_amount"]
-        self.restart_accuracy_bound = specs["restart_accuracy_bound"]
+        self.fgsm_restart = FGSM_SPECS["fgsm_restart"]
+        self.restart_max_amount = FGSM_SPECS["restart_max_amount"]
+        self.restart_accuracy_bound = FGSM_SPECS["restart_accuracy_bound"]
 
-        self.retrain_mode = specs["retrain_mode"]
-        self.retrain_lr = specs["retrain_lr"]
-        self.retrain_max_gradient_steps = specs["retrain_max_gradient_steps"]
-        self.retrain_threshold = specs["retrain_threshold"]
+        self.retrain_mode = FGSM_SPECS["retrain_mode"]
+        self.retrain_lr = FGSM_SPECS["retrain_lr"]
+        self.retrain_max_gradient_steps = FGSM_SPECS["retrain_max_gradient_steps"]
+        self.retrain_threshold = FGSM_SPECS["retrain_threshold"]
+        self.always_save = FGSM_SPECS["always_save"]
 
     def reload_model(self, model):
         if model is None:
@@ -163,6 +171,7 @@ class FGSM:
                 advers = self.create_advers([im[-1]], target_label, [im[0]]).reshape((1, 3, 64, 64))
             else:
                 print("start should be \"original\" or \"last\" ")
+                break
             im = np.concatenate((im, advers))
 
             new_label = save_and_query(torch_to_saveable(im[-1]), save_url).reshape(1, 43)
@@ -175,18 +184,17 @@ class FGSM:
             if target > self.target_threshold:
                 stop = True
                 print("found adversarial example")
-            if steps >= self.restart_max_amount  or mse < self.restart_accuracy_bound:
+            if steps >= self.restart_max_amount or mse < self.restart_accuracy_bound:
                 stop = True
                 print("convergence failed. relax bounds, increase loop length or start with another image!")
-        return None
-
-    def preview_im(self, im_url):
-        print("Labels with highest confidence:")
-        query_with_labelnums(im_url)
-        print("try attacking one of those labels!")
+                if self.always_save is False:
+                    try:
+                        remove("save_url")
+                    except FileNotFoundError:
+                        pass
+        return target
 
     def simple_attack(self, im_url, save_url):
         target_label = np.argmax(np.array(query_to_labels(im_url)))
         print("attacking label " + str(target_label))
-        self.attack_on_label(im_url, save_url, target_label)
-        return None
+        return self.attack_on_label(im_url, save_url, target_label)

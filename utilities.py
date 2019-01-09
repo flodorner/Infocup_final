@@ -108,7 +108,7 @@ def save_and_query(im, save_url, delete=False):
     if delete:
         try:
             remove("save_url")
-        except:
+        except FileNotFoundError:
             pass
     return label
 

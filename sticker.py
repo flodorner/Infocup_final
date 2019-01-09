@@ -40,7 +40,7 @@ def load_random_sticker(label):
         raise Exception("no stickers with this label available")
     try:
         imlist.remove(sticker_directory + "\\" + str(label) + "\\desktop.ini")
-    except:
+    except FileNotFoundError:
         pass
     sticker_url = "\\" + str(label) + "\\" + imlist[randint(0, len(imlist)-1)].split("\\")[-1]
     
@@ -100,7 +100,7 @@ class StickerGenerator:
             
         try:
             remove("temp.png")
-        except:
+        except FileNotFoundError:
             pass
 
     def _generate_pixels(self):
@@ -116,7 +116,7 @@ class StickerGenerator:
                     sleep(1)
         try:
             remove("temp.png")
-        except:
+        except FileNotFoundError:
             pass
         return None
 
@@ -144,7 +144,7 @@ class StickerGenerator:
             
         try:
             remove("temp.png")
-        except:
+        except FileNotFoundError:
             pass
         
         return basic_im
