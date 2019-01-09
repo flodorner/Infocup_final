@@ -114,12 +114,12 @@ def save_and_query(im, save_url, delete=False):
 
 
 def query_with_labelnums(im_url):
-    dict = dict_parser(query_to_text(im_url))
-    for key in dict:
-        if dict[key] != 0:
-            prob = dict[key]
+    dictionary = dict_parser(query_to_text(im_url))
+    for key in dictionary:
+        if dictionary[key] != 0:
+            prob = dictionary[key]
             print(key + " (label " + str(classnamedict[key]) + "): " + str(prob))
-    return dict
+    return dictionary
 
 
 def torch_to_saveable(im):

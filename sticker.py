@@ -5,7 +5,7 @@ from time import sleep
 from random import randint
 
 
-from config import sticker_directory
+from config import STICKER_DIRECTORY
 from utilities import url_to_im, save, save_and_query
 
 
@@ -34,12 +34,12 @@ def stick(image, sticker):
 
 
 def load_random_sticker(label):
-    imlist = glob(sticker_directory + "\\" + str(label) + "\\*")
+    imlist = glob(STICKER_DIRECTORY + "\\" + str(label) + "\\*")
 
     if len(imlist) == 0:
         raise Exception("no stickers with this label available")
     try:
-        imlist.remove(sticker_directory + "\\" + str(label) + "\\desktop.ini")
+        imlist.remove(STICKER_DIRECTORY + "\\" + str(label) + "\\desktop.ini")
     except FileNotFoundError:
         pass
     sticker_url = "\\" + str(label) + "\\" + imlist[randint(0, len(imlist)-1)].split("\\")[-1]
@@ -56,7 +56,7 @@ def sticker_attack(image_url, save_url, sticker_url=None, mode="full", label=Non
     elif label is None:
         label = int(sticker_url.split("\\")[0])
         
-    sticker_url = sticker_directory + "\\" + sticker_url  
+    sticker_url = STICKER_DIRECTORY + "\\" + sticker_url  
     sticker = url_to_im(sticker_url)
     image = url_to_im(image_url)
     
@@ -74,7 +74,7 @@ def sticker_attack(image_url, save_url, sticker_url=None, mode="full", label=Non
 
 class StickerGenerator:
 
-    def __init__(self,  directory=sticker_directory, imagesize=64, pixelsize=3, fringe=17, stride=3,
+    def __init__(self,  directory=STICKER_DIRECTORY, imagesize=64, pixelsize=3, fringe=17, stride=3,
                  start=np.zeros((64, 64, 3), dtype=np.uint8)):
         
         self.directory = directory
@@ -137,7 +137,7 @@ class StickerGenerator:
         else: 
             prob = np.zeros(43)
         if prob[label] > save_threshold:
-            save_url = sticker_directory + "\\" + str(label) + "\\" + title +\
+            save_url = STICKER_DIRECTORY + "\\" + str(label) + "\\" + title +\
                        str(pixel_threshold) + str(prob[label]) + ".png"
             save(basic_im, save_url)
             print("Sticker saved under " + save_url)

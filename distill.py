@@ -1,10 +1,10 @@
 import torch
 from torch import nn
-import torch.nn.functional as F
+import torch.nn.functional as f
 
 
 def create_distilled(device):
-    model = ResNet(num_Blocks=(1, 1, 1, 1), prefilter=7, output_dim=43, norm=False).to(device)
+    model = ResNet(num_blocks=(1, 1, 1, 1), prefilter=7, output_dim=43, norm=False).to(device)
     model.load_state_dict(
         torch.load("C:\\Users\\flodo\\Documents\\GitHub\\Infocup\\Models\\model_1x4_noisetrain_pre7150.pt"))
     return model
@@ -12,7 +12,7 @@ def create_distilled(device):
 
 class ResNet(nn.Module):
 
-    def __init__(self, num_Blocks=(2, 2, 2, 2), output_dim=10, nc=3, prefilter=3, norm=True):
+    def __init__(self, num_blocks=(2, 2, 2, 2), output_dim=10, nc=3, prefilter=3, norm=True):
         super().__init__()
         self.norm = norm
         self.in_planes = 64
@@ -20,14 +20,14 @@ class ResNet(nn.Module):
         # changed
         self.conv1 = nn.Conv2d(nc, 64, kernel_size=prefilter, stride=2, padding=1, bias=True)
         self.bn1 = nn.BatchNorm2d(64)
-        self.layer1 = self._make_layer(BasicBlock, 64, num_Blocks[0], stride=1)
-        self.layer2 = self._make_layer(BasicBlock, 128, num_Blocks[1], stride=2)
-        self.layer3 = self._make_layer(BasicBlock, 256, num_Blocks[2], stride=2)
-        self.layer4 = self._make_layer(BasicBlock, 512, num_Blocks[3], stride=2)
+        self.layer1 = self._make_layer(BasicBlock, 64, num_blocks[0], stride=1)
+        self.layer2 = self._make_layer(BasicBlock, 128, num_blocks[1], stride=2)
+        self.layer3 = self._make_layer(BasicBlock, 256, num_blocks[2], stride=2)
+        self.layer4 = self._make_layer(BasicBlock, 512, num_blocks[3], stride=2)
         self.linear = nn.Linear(512, output_dim)
 
-    def _make_layer(self, BasicBlock, planes, num_Blocks, stride):
-        strides = [stride] + [1] * (num_Blocks - 1)
+    def _make_layer(self, BasicBlock, planes, num_blocks, stride):
+        strides = [stride] + [1] * (num_blocks - 1)
         layers = []
         for stride in strides:
             layers += [BasicBlock(self.in_planes, stride)]
@@ -43,7 +43,7 @@ class ResNet(nn.Module):
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.layer4(x)
-        x = F.adaptive_avg_pool2d(x, 1)
+        x = f.adaptive_avg_pool2d(x, 1)
         x = x.view(x.size(0), -1)
         x = torch.sigmoid(self.linear(x))
         return x
