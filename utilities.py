@@ -4,6 +4,7 @@ import numpy as np
 from os import remove
 import requests
 from PIL import Image
+from time import sleep
 
 classnamedict = {'Zulässige Höchstgeschwindigkeit (20)': 0,
                  'Zulässige Höchstgeschwindigkeit (30)': 1,
@@ -60,20 +61,34 @@ def dict_parser(string):
     return dictionary
 
 
-def class_labels_to_one_hot(output, n=43):
+def class_labels_to_one_hot(output):
     output = dict_parser(output)
-    labels = np.zeros(n)
+    labels = np.zeros(LABEL_AMOUNT)
     for key in output:
         labels[classnamedict[key]] = output[key]
     return labels
 
 
-def query_to_text(image_path):
+class ServerError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+
+def query_to_text(image_path, retries=5):
     files = {'image': (image_path, open(image_path, 'rb'), 'image/png')}
     data = {'key': KEY}
-    r = requests.post(URL, files=files, data=data)
-    if r.status_code != 200:
-        raise Exception(str(r.status_code) + ' ' + r.text)
+    for i in range(retries):
+        r = requests.post(URL, files=files, data=data)
+        if r.status_code != 200:
+            print("Query failed. Status code:")
+            print(str(r.status_code) + ' ' + r.text)
+            if i == retries - 1:
+                raise ServerError("Too many retries. " + str(r.status_code) + ' ' + r.text)
+            else:
+                print("Trying again")
+                sleep(1)
+        else:
+            break
     return r.text
 
 

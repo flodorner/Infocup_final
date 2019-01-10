@@ -5,7 +5,7 @@ from time import sleep
 from random import randint
 
 
-from config import STICKER_DIRECTORY
+from config import *
 from utilities import url_to_im, save, save_and_query
 
 
@@ -66,7 +66,7 @@ def sticker_attack(image_url, save_url, sticker_url=None, mode="full", label=Non
         output = stick_trans(image, sticker)
     else:
         raise Exception("mode is supposed to be full or transparent")
-        
+
     print(save_and_query(output, save_url)[label])
     
     return None
@@ -74,11 +74,11 @@ def sticker_attack(image_url, save_url, sticker_url=None, mode="full", label=Non
 
 class StickerGenerator:
 
-    def __init__(self,  directory=STICKER_DIRECTORY, imagesize=64, pixelsize=3, fringe=17, stride=3,
-                 start=np.zeros((64, 64, 3), dtype=np.uint8)):
+    def __init__(self,  directory=STICKER_DIRECTORY, pixelsize=3, fringe=17, stride=3,
+                 start=np.zeros((IMAGE_SIZE, IMAGE_SIZE, CHANNELS), dtype=np.uint8)):
         
         self.directory = directory
-        self.imagesize = imagesize
+        self.imagesize = IMAGE_SIZE
         self.pixelsize = pixelsize
         self.fringe = fringe
         self.stride = stride
@@ -86,13 +86,13 @@ class StickerGenerator:
 
         basic_im = np.copy(self.start)
         self.basic_prob = np.array(save_and_query(basic_im, "temp.png"))
-        self.queries = 1
 
+        self.queries = 1
         self.num_rows = (self.imagesize - 2 * self.fringe) / self.stride - (self.pixelsize / self.stride - 1)
         
         if self.num_rows.is_integer():
             self.num_rows = int(self.num_rows)
-            self.probarray = np.zeros((self.num_rows, self.num_rows, 3, 43))
+            self.probarray = np.zeros((self.num_rows, self.num_rows, 3, LABEL_AMOUNT))
             self._generate_pixels()
             
         else:
@@ -106,7 +106,7 @@ class StickerGenerator:
     def _generate_pixels(self):
         for i in range(self.num_rows):
             for j in range(self.num_rows):
-                for k in range(3):
+                for k in range(CHANNELS):
                     basic_im = np.copy(self.start)
                     basic_im[self.fringe + i * self.stride:self.fringe + i * self.stride + self.pixelsize,
                              self.fringe + j * self.stride:self.fringe + j * self.stride + self.pixelsize, k] = 255
@@ -125,7 +125,7 @@ class StickerGenerator:
         basic_im = np.copy(self.start)
         for i in range(self.num_rows):
             for j in range(self.num_rows):
-                for k in range(3):
+                for k in range(CHANNELS):
                     if self.probarray[i, j, k, label] > pixel_threshold:
                         basic_im[self.fringe + i * self.stride:self.fringe + i * self.stride + self.pixelsize,
                                  self.fringe + j * self.stride:self.fringe + j * self.stride + self.pixelsize, k] = 255               
@@ -135,7 +135,7 @@ class StickerGenerator:
             sleep(1)
             print("Confidence for Sticker on label " + str(label) + ": " + str(prob[label]))
         else: 
-            prob = np.zeros(43)
+            prob = np.zeros(LABEL_AMOUNT)
         if prob[label] > save_threshold:
             save_url = STICKER_DIRECTORY + "\\" + str(label) + "\\" + title +\
                        str(pixel_threshold) + str(prob[label]) + ".png"

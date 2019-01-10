@@ -3,7 +3,7 @@ from torch import optim, nn
 from os import remove
 import numpy as np
 
-from config import FGSM_SPECS
+from config import *
 from utilities import torch_to_saveable, url_to_torch, save_and_query, query_to_labels, query_with_labelnums
 from distill import create_distilled
 
@@ -143,7 +143,7 @@ class FGSM:
 
     def attack_on_label(self, im_url, save_url, target_label,):
         im = url_to_torch(im_url)
-        labels = save_and_query(torch_to_saveable(im[-1]), save_url).reshape(1, 43)
+        labels = save_and_query(torch_to_saveable(im[-1]), save_url).reshape(1, LABEL_AMOUNT)
         stop = False
         steps = 0
 
@@ -168,16 +168,16 @@ class FGSM:
                 break
 
             if self.fgsm_restart == "original":
-                advers = self._create_advers([im[0]], target_label, [im[0]]).reshape((1, 3, 64, 64))
+                advers = self._create_advers([im[0]], target_label, [im[0]])
             elif self.fgsm_restart == "last":
-                advers = self._create_advers([im[-1]], target_label, [im[0]]).reshape((1, 3, 64, 64))
+                advers = self._create_advers([im[-1]], target_label, [im[0]])
             else:
                 if self.print:
                     print("start should be \"original\" or \"last\" ")
                 break
             im = np.concatenate((im, advers))
 
-            new_label = save_and_query(torch_to_saveable(im[-1]), save_url).reshape(1, 43)
+            new_label = save_and_query(torch_to_saveable(im[-1]), save_url).reshape(1, LABEL_AMOUNT)
             labels = np.concatenate((labels, new_label))
             target = labels[-1][target_label]
             if self.print:

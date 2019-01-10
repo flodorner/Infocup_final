@@ -1,6 +1,9 @@
 URL = 'https://phinau.de/trasi'
 KEY = 'ut6ohb7ZahV9tahjeikoo1eeFaev1aef'
 STICKER_DIRECTORY = "Quickstick"
+LABEL_AMOUNT = 43
+IMAGE_SIZE = 64
+CHANNELS = 3
 
 # Write instructions and default parameters to readme!
 FGSM_SPECS = {
