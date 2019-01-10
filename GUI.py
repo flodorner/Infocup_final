@@ -46,12 +46,10 @@ class AdversarialStudio:
         self.Sticker_Button_trans = Button(text="Add transparent sticker",
                                            command=lambda: self._sticker_button("trans"))
 
-
         self.Interface = Frame(root)
         self.Buttons = Frame(self.Interface)
         self.Noisebutton = Button(self.Buttons, text="Add Noise", command=self._advers_attack)
         self.Retrainbutton = Button(self.Buttons, text="Retrain Whitebox", command=self._retrain_whitebox)
-
 
         self.Label_text = Label(self.Interface, text="Target Label:")
         self.Label_param = Entry(self.Interface,
@@ -100,82 +98,7 @@ class AdversarialStudio:
         self.Noisebutton.grid(row=0, column=0)
         self.Retrainbutton.grid(row=0, column=1)
 
-
         root.mainloop()
-
-    def _retrain_whitebox(self):
-        self.edit_img_PIL.save("GUI\\temp.png")
-        label = query_to_labels("GUI\\temp.png")
-        im = url_to_torch("GUI\\temp.png")
-        self.Generator.adapt(im, np.array([label]), int(self.Label_param.get()))
-        self._add_whitebox_info()
-
-    def _advers_attack(self):
-        self.edit_img_PIL.save("GUI\\temp.png")
-        im = url_to_torch("GUI\\temp.png")
-        self.orig_img_PIL.save("GUI\\temp.png")
-        base = url_to_torch("GUI\\temp.png")
-
-        advers_array, new_label = self.Generator.fastgrad_step(im, int(self.Label_param.get()), base)
-        self.edit_img_PIL = Image.fromarray(torch_to_saveable(advers_array[0]))
-
-        edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
-        self.Edited_image.configure(image=edit_img)
-        self.Edited_image.image = edit_img
-
-        self.Whitebox_text.configure(text=str("%.2f" % new_label))
-        self._refresh_labels()
-
-
-
-
-    def _islabel(self):
-        if not self.Label_param.get().isdigit():
-            return False
-        elif int(self.Label_param.get()) < LABEL_AMOUNT:
-            self._refresh_labels()
-            return True
-        else:
-            return False
-
-    def _isbound(self):
-        if not self.Bound_param.get().isdigit():
-            return False
-        else:
-            self.Generator.bound = int(self.Bound_param.get())
-            return True
-
-    def _ismagnitude(self):
-        if not self.Magnitude_param.get().isdigit():
-            return False
-        else:
-            self.Generator.magnitude = int(self.Magnitude_param.get())
-            return True
-
-
-
-    def _resetlabel(self, string="4"):
-        self.Label_param.delete(0, 'end')
-        self.Label_param.insert(0, string)
-
-
-    def _resetbound(self):
-        self.Bound_param.delete(0, 'end')
-        self.Bound_param.insert(0, FGSM_SPECS["bound"])
-
-    def _resetmagnitude(self):
-        self.Magnitude_param.delete(0, 'end')
-        self.Magnitude_param.insert(0, FGSM_SPECS["magnitude"])
-
-    def _add_whitebox_info(self):
-        self.Whitebox_description.configure(text="Whitebox prediction: ")
-        self.edit_img_PIL.save("GUI\\temp.png")
-        im = url_to_torch("GUI\\temp.png")
-
-        text = str("%.2f" % self.Generator.get_label(im, int(self.Label_param.get())))
-        self.Whitebox_text.configure(text=text)
-
-
 
     def _get_max_label(self):
         self.orig_img_PIL.save("GUI\\temp.png")
@@ -201,6 +124,49 @@ class AdversarialStudio:
             conf = "Error: Try Reloading"
         return conf
 
+    def _islabel(self):
+        if not self.Label_param.get().isdigit():
+            return False
+        elif int(self.Label_param.get()) < LABEL_AMOUNT:
+            self._refresh_labels()
+            return True
+        else:
+            return False
+
+    def _isbound(self):
+        if not self.Bound_param.get().isdigit():
+            return False
+        else:
+            self.Generator.bound = int(self.Bound_param.get())
+            return True
+
+    def _ismagnitude(self):
+        if not self.Magnitude_param.get().isdigit():
+            return False
+        else:
+            self.Generator.magnitude = int(self.Magnitude_param.get())
+            return True
+
+    def _resetlabel(self, string="4"):
+        self.Label_param.delete(0, 'end')
+        self.Label_param.insert(0, string)
+
+    def _resetbound(self):
+        self.Bound_param.delete(0, 'end')
+        self.Bound_param.insert(0, FGSM_SPECS["bound"])
+
+    def _resetmagnitude(self):
+        self.Magnitude_param.delete(0, 'end')
+        self.Magnitude_param.insert(0, FGSM_SPECS["magnitude"])
+
+    def _add_whitebox_info(self):
+        self.Whitebox_description.configure(text="Whitebox prediction: ")
+        self.edit_img_PIL.save("GUI\\temp.png")
+        im = url_to_torch("GUI\\temp.png")
+
+        text = str("%.2f" % self.Generator.get_label(im, int(self.Label_param.get())))
+        self.Whitebox_text.configure(text=text)
+
     def _refresh_labels(self):
         conf = self._get_orig_conf()
         text = reverse_classnamedict[int(self.Label_param.get())] + ": " + str("%.2f" % conf)
@@ -211,17 +177,16 @@ class AdversarialStudio:
         text = textwrap.fill(text, 45)
         self.Edited_text.configure(text=text)
 
-
     def _open_button(self):
         filename = filedialog.askopenfilename()
         open_path = filename
 
-        self.orig_img_PIL = Image.open(open_path).resize((IMAGE_SIZE,IMAGE_SIZE))
+        self.orig_img_PIL = Image.open(open_path).resize((IMAGE_SIZE, IMAGE_SIZE))
         orig_img = ImageTk.PhotoImage(self.orig_img_PIL.resize((256, 256)))
         self.Original_image.configure(image=orig_img)
         self.Original_image.image = orig_img
 
-        self.edit_img_PIL = Image.open(open_path).resize((IMAGE_SIZE,IMAGE_SIZE))
+        self.edit_img_PIL = Image.open(open_path).resize((IMAGE_SIZE, IMAGE_SIZE))
         edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
         self.Edited_image.configure(image=edit_img)
         self.Edited_image.image = edit_img
@@ -229,8 +194,6 @@ class AdversarialStudio:
         self._resetlabel(str(self._get_max_label()))
         self._refresh_labels()
         self._add_whitebox_info()
-
-
 
     def _reset_button(self):
         self.edit_img_PIL = self.orig_img_PIL.copy()
@@ -241,12 +204,10 @@ class AdversarialStudio:
         self._refresh_labels()
         self._add_whitebox_info()
 
-
     def _save_button(self):
         filename = filedialog.asksaveasfilename(filetypes=[("png files", "*.png")])
         print(filename)
         self.edit_img_PIL.save(filename+".png")
-
 
     def _sticker_button(self, mode="full"):
         filename = filedialog.askopenfilename(initialdir=path.abspath(STICKER_DIRECTORY)+"\\"+self.Label_param.get())
@@ -262,6 +223,29 @@ class AdversarialStudio:
 
         self._refresh_labels()
         self._add_whitebox_info()
+
+    def _retrain_whitebox(self):
+        self.edit_img_PIL.save("GUI\\temp.png")
+        label = query_to_labels("GUI\\temp.png")
+        im = url_to_torch("GUI\\temp.png")
+        self.Generator.adapt(im, np.array([label]), int(self.Label_param.get()))
+        self._add_whitebox_info()
+
+    def _advers_attack(self):
+        self.edit_img_PIL.save("GUI\\temp.png")
+        im = url_to_torch("GUI\\temp.png")
+        self.orig_img_PIL.save("GUI\\temp.png")
+        base = url_to_torch("GUI\\temp.png")
+
+        advers_array, new_label = self.Generator.fastgrad_step(im, int(self.Label_param.get()), base)
+        self.edit_img_PIL = Image.fromarray(torch_to_saveable(advers_array[0]))
+
+        edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
+        self.Edited_image.configure(image=edit_img)
+        self.Edited_image.image = edit_img
+
+        self.Whitebox_text.configure(text=str("%.2f" % new_label))
+        self._refresh_labels()
 
 
 AdversarialStudio()
