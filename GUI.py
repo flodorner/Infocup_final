@@ -15,38 +15,37 @@ class AdversarialStudio:
 
     def __init__(self):
 
-        root = Tk()
-        root.title('Adversarial Studio')
+        self.Root = Tk()
+        self.Root.title('Adversarial Studio')
 
-        root.resizable(False, False)
+        self.Root.resizable(False, False)
 
         self.Generator = FGSM()
 
-        self.Open_Dialog = Frame(root)
-
-        self.Original_description = Label(root, text="Original Image:")
-        self.Original_text = Label(root, text="")
+        self.Original_description = Label(self.Root, text="Original Image:")
+        self.Original_text = Label(self.Root, text="")
         self.orig_img_PIL = Image.open("GUI\\grey.png").resize((IMAGE_SIZE, IMAGE_SIZE))
         orig_img = ImageTk.PhotoImage(self.orig_img_PIL.resize((256, 256)))
-        self.Original_image = Label(root, image=orig_img)
+        self.Original_image = Label(self.Root, image=orig_img)
 
-        self.Edited_description = Label(root, text="Edited Image:")
+        self.Edited_description = Label(self.Root, text="Edited Image:")
         self.edit_img_PIL = self.orig_img_PIL.copy()
-        self.Edited_text = Label(root, text="")
+        self.Edited_text = Label(self.Root, text="")
         edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
-        self.Edited_image = Label(root, image=edit_img)
+        self.Edited_image = Label(self.Root, image=edit_img)
 
-        self.Whitebox_description = Label(root, text="")
-        self.Whitebox_text = Label(root, text="")
+        self.Whitebox_description = Label(self.Root, text="")
+        self.Whitebox_text = Label(self.Root, text="")
 
-        self.Load_Button = Button(text="Load image", command=self._open_button)
-        self.Save_Button = Button(text="Save image", command=self._save_button)
-        self.Reset_Button = Button(text="Reset current image", command=self._reset_button)
-        self.Sticker_Button_full = Button(text="Add sticker", command=lambda: self._sticker_button("full"))
-        self.Sticker_Button_trans = Button(text="Add transparent sticker",
+        self.Top = Frame(self.Root)
+        self.Load_Button = Button(self.Top, text="Load image", command=self._open_button)
+        self.Save_Button = Button(self.Top, text="Save image", command=self._save_button)
+        self.Reset_Button = Button(self.Top, text="Reset current image", command=self._reset_button)
+        self.Sticker_Button_full = Button(self.Top, text="Add sticker", command=lambda: self._sticker_button("full"))
+        self.Sticker_Button_trans = Button(self.Top, text="Add transparent sticker",
                                            command=lambda: self._sticker_button("trans"))
 
-        self.Interface = Frame(root)
+        self.Interface = Frame(self.Root)
         self.Buttons = Frame(self.Interface)
         self.Noisebutton = Button(self.Buttons, text="Add Noise", command=self._advers_attack)
         self.Retrainbutton = Button(self.Buttons, text="Retrain Whitebox", command=self._retrain_whitebox)
@@ -66,8 +65,8 @@ class AdversarialStudio:
         self.Magnitude_param = Entry(self.Interface, validate="focusout", validatecommand=self._ismagnitude,
                                      invalidcommand=self._resetmagnitude)
         self.Magnitude_param.insert(0, FGSM_SPECS["magnitude"])
-
-        self.Open_Dialog.grid(row=0, column=0)
+        
+        self.Top.grid(row=0, columnspan=6, sticky=W)
         self.Load_Button.grid(row=0, column=0, sticky=W)
         self.Save_Button.grid(row=0, column=1, sticky=W)
         self.Reset_Button.grid(row=0, column=2, sticky=W)
@@ -98,7 +97,7 @@ class AdversarialStudio:
         self.Noisebutton.grid(row=0, column=0)
         self.Retrainbutton.grid(row=0, column=1)
 
-        root.mainloop()
+        self.Root.mainloop()
 
     def _get_max_label(self):
         self.orig_img_PIL.save("GUI\\temp.png")
@@ -154,10 +153,12 @@ class AdversarialStudio:
     def _resetbound(self):
         self.Bound_param.delete(0, 'end')
         self.Bound_param.insert(0, FGSM_SPECS["bound"])
+        self.Generator.bound = int(self.Bound_param.get())
 
     def _resetmagnitude(self):
         self.Magnitude_param.delete(0, 'end')
         self.Magnitude_param.insert(0, FGSM_SPECS["magnitude"])
+        self.Generator.magnitude = int(self.Magnitude_param.get())
 
     def _add_whitebox_info(self):
         self.Whitebox_description.configure(text="Whitebox prediction: ")
