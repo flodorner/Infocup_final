@@ -50,6 +50,7 @@ classnamedict = {'Zulässige Höchstgeschwindigkeit (20)': 0,
                  'Ende des Überholverbotes für Kraftfahrzeuge aller Art': 41,
                  'Ende des Überholverbotes für Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5t': 42}
 
+reverse_classnamedict = {v: k for k, v in classnamedict.items()}
 
 def dict_parser(string):
     dictionary = {}

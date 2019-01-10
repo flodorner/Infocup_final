@@ -1,0 +1,235 @@
+from config import *
+from utilities import url_to_im, url_to_torch, torch_to_saveable, query_to_labels, reverse_classnamedict, ServerError
+from sticker import stick, stick_trans
+from fgsm import FGSM
+
+from tkinter import filedialog
+from tkinter import *
+from PIL import ImageTk, Image
+from os import path
+import numpy as np
+import textwrap
+
+
+class AdversarialStudio:
+
+    def __init__(self):
+
+        root = Tk()
+        root.title('Adversarial Studio')
+
+        root.resizable(False, False)
+
+        self.Generator = FGSM()
+
+        self.Open_Dialog = Frame(root)
+
+        self.Original_description = Label(root, text="Original Image:")
+        self.Original_text = Label(root, text="")
+        self.orig_img_PIL = Image.open("GUI\\grey.png").resize((IMAGE_SIZE, IMAGE_SIZE))
+        orig_img = ImageTk.PhotoImage(self.orig_img_PIL.resize((256, 256)))
+        self.Original_image = Label(root, image=orig_img)
+
+        self.Edited_description = Label(root, text="Edited Image:")
+        self.edit_img_PIL = self.orig_img_PIL.copy()
+        self.Edited_text = Label(root, text="")
+        edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
+        self.Edited_image = Label(root, image=edit_img)
+
+        self.Whitebox_description = Label(root, text="")
+        self.Whitebox_text = Label(root, text="")
+
+        self.Load_Button = Button(text="Load image", command=self._open_button)
+        self.Save_Button = Button(text="Save image", command=self._save_button)
+        self.Reset_Button = Button(text="Reset current image", command=self._reset_button)
+        self.Sticker_Button_full = Button(text="Add sticker", command=lambda: self._sticker_button("full"))
+        self.Sticker_Button_trans = Button(text="Add transparent sticker",
+                                           command=lambda: self._sticker_button("trans"))
+
+
+        self.Interface = Frame(root)
+        self.Buttons = Frame(self.Interface)
+        self.Noisebutton = Button(self.Buttons, text="Add Noise", command=self._advers_attack)
+        self.Retrainbutton = Button(self.Buttons, text="Retrain Whitebox", command=self._retrain_whitebox)
+
+
+        self.Label_text = Label(self.Interface, text="Target Label:")
+        self.Label_param = Entry(self.Interface,
+                                 validate="focusout", validatecommand=self._islabel,
+                                 invalidcommand=self._resetlabel)
+        self.Label_param.insert(0, "4")
+        self.Bound_text = Label(self.Interface, text="Noise Bound:")
+        self.Bound_param = Entry(self.Interface)
+        self.Bound_param.insert(0, FGSM_SPECS["bound"])
+        self.Magnitude_text = Label(self.Interface, text="Noise Magnitude:")
+        self.Magnitude_param = Entry(self.Interface)
+        self.Magnitude_param.insert(0, FGSM_SPECS["magnitude"])
+
+        self.Open_Dialog.grid(row=0, column=0)
+        self.Load_Button.grid(row=0, column=0, sticky=W)
+        self.Save_Button.grid(row=0, column=1, sticky=W)
+        self.Reset_Button.grid(row=0, column=2, sticky=W)
+        self.Sticker_Button_full.grid(row=0, column=3, sticky=W)
+        self.Sticker_Button_trans.grid(row=0, column=4, sticky=W)
+
+        self.Original_image.grid(row=1, column=0, rowspan=3, columnspan=3, sticky=W)
+        self.Original_description.grid(row=4, column=0, columnspan=3, rowspan=2, sticky=W)
+        self.Original_text.grid(row=6, column=0, columnspan=3, rowspan=2, sticky=W)
+
+        self.Edited_image.grid(row=1, column=3, rowspan=3, columnspan=3, sticky=W)
+        self.Edited_description.grid(row=4, column=3, columnspan=3, rowspan=2, sticky=W)
+        self.Edited_text.grid(row=6, column=3, columnspan=3, rowspan=2, sticky=W)
+
+        self.Whitebox_description.grid(row=4, column=6, columnspan=3, rowspan=2, sticky=W)
+        self.Whitebox_text.grid(row=6, column=6, columnspan=3, rowspan=2, sticky=W)
+
+        self.Interface.grid(row=2, column=7)
+
+        self.Label_text.grid(row=0, column=0, sticky=E)
+        self.Label_param.grid(row=0, column=1)
+        self.Bound_text.grid(row=1, column=0, sticky=E)
+        self.Bound_param.grid(row=1, column=1)
+        self.Magnitude_text.grid(row=2, column=0, sticky=E)
+        self.Magnitude_param.grid(row=2, column=1)
+
+        self.Buttons.grid(row=4, columnspan=2)
+        self.Noisebutton.grid(row=0, column=0)
+        self.Retrainbutton.grid(row=0, column=1)
+
+
+        root.mainloop()
+
+    def _retrain_whitebox(self):
+        self.edit_img_PIL.save("GUI\\temp.png")
+        label = query_to_labels("GUI\\temp.png")
+        im = url_to_torch("GUI\\temp.png")
+        self.Generator.adapt(im, np.array([label]), int(self.Label_param.get()))
+        self._add_whitebox_info()
+
+    def _advers_attack(self):
+        self.edit_img_PIL.save("GUI\\temp.png")
+        im = url_to_torch("GUI\\temp.png")
+        self.orig_img_PIL.save("GUI\\temp.png")
+        base = url_to_torch("GUI\\temp.png")
+
+        advers_array, new_label = self.Generator.fastgrad_step(im, int(self.Label_param.get()), base)
+        self.edit_img_PIL = Image.fromarray(torch_to_saveable(advers_array[0]))
+        self.Whitebox_text.configure(text=str("%.2f" % new_label))
+        self._refresh_labels()
+
+
+
+    def _islabel(self):
+        try:
+            if int(self.Label_param.get()) < LABEL_AMOUNT:
+                self._refresh_labels()
+                return True
+            else:
+                return False
+        except:
+            return False
+
+    def _resetlabel(self, string="4"):
+        self.Label_param.delete(0, 'end')
+        self.Label_param.insert(0, string)
+
+    def _add_whitebox_info(self):
+        self.Whitebox_description.configure(text="Whitebox prediction: ")
+        self.edit_img_PIL.save("GUI\\temp.png")
+        im = url_to_torch("GUI\\temp.png")
+
+        text = str("%.2f" % self.Generator.get_label(im, int(self.Label_param.get())))
+        self.Whitebox_text.configure(text=text)
+
+
+
+    def _get_max_label(self):
+        self.orig_img_PIL.save("GUI\\temp.png")
+        try:
+            label = np.argmax(query_to_labels("GUI\\temp.png"))
+        except ServerError:
+            label = 4
+        return label
+
+    def _get_orig_conf(self):
+        self.orig_img_PIL.save("GUI\\temp.png")
+        try:
+            conf = query_to_labels("GUI\\temp.png")[int(self.Label_param.get())]
+        except ServerError:
+            conf = "Error: Try Reloading"
+        return conf
+
+    def _get_edit_conf(self):
+        self.edit_img_PIL.save("GUI\\temp.png")
+        try:
+            conf = query_to_labels("GUI\\temp.png")[int(self.Label_param.get())]
+        except ServerError:
+            conf = "Error: Try Reloading"
+        return conf
+
+    def _refresh_labels(self):
+        conf = self._get_orig_conf()
+        text = reverse_classnamedict[int(self.Label_param.get())] + ": " + str("%.2f" % conf)
+        text = textwrap.fill(text, 45)
+        self.Original_text.configure(text=text)
+        conf = self._get_edit_conf()
+        text = reverse_classnamedict[int(self.Label_param.get())] + ": " + str("%.2f" % conf)
+        text = textwrap.fill(text, 45)
+        self.Edited_text.configure(text=text)
+
+
+    def _open_button(self):
+        filename = filedialog.askopenfilename()
+        open_path = filename
+
+        self.orig_img_PIL = Image.open(open_path).resize((IMAGE_SIZE,IMAGE_SIZE))
+        orig_img = ImageTk.PhotoImage(self.orig_img_PIL.resize((256, 256)))
+        self.Original_image.configure(image=orig_img)
+        self.Original_image.image = orig_img
+
+        self.edit_img_PIL = Image.open(open_path).resize((IMAGE_SIZE,IMAGE_SIZE))
+        edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
+        self.Edited_image.configure(image=edit_img)
+        self.Edited_image.image = edit_img
+
+        self._resetlabel(str(self._get_max_label()))
+        self._refresh_labels()
+        self._add_whitebox_info()
+
+
+
+    def _reset_button(self):
+        self.edit_img_PIL = self.orig_img_PIL.copy()
+        edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
+        self.Edited_image.configure(image=edit_img)
+        self.Edited_image.image = edit_img
+
+        self._refresh_labels()
+        self._add_whitebox_info()
+
+
+    def _save_button(self):
+        filename = filedialog.asksaveasfilename(filetypes=[("png files", "*.png")])
+        print(filename)
+        self.edit_img_PIL.save(filename+".png")
+
+
+    def _sticker_button(self, mode="full"):
+        filename = filedialog.askopenfilename(initialdir=path.abspath(STICKER_DIRECTORY)+"\\"+self.Label_param.get())
+        start = np.asarray(self.edit_img_PIL.convert("RGB"))
+        sticker = url_to_im(filename)
+        if mode == "full":
+            self.edit_img_PIL = Image.fromarray(stick(start, sticker))
+        elif mode == "trans":
+            self.edit_img_PIL = Image.fromarray(stick_trans(start, sticker))
+        edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
+        self.Edited_image.configure(image=edit_img)
+        self.Edited_image.image = edit_img
+
+        self._refresh_labels()
+        self._add_whitebox_info()
+
+
+AdversarialStudio()
+
+#Surpress exceptions?!!!

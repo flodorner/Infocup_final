@@ -59,12 +59,6 @@ class FGSM:
 
         self.print = FGSM_SPECS["print"]
 
-    def _get_label(self, im, target_label):
-        self.model.eval()
-        output = self.model(torch.tensor(im).to(self.device))
-        label = torch.take(output, torch.tensor(target_label).to(self.device)).item()
-        return label
-
     def _get_gradient(self, im, target_label):
         self.model.eval()
         im_tensor = torch.tensor(im).to(self.device)
@@ -76,7 +70,7 @@ class FGSM:
 
         return im_grad
 
-    def _fastgrad_step(self, im, target_label, base):
+    def fastgrad_step(self, im, target_label, base):
         im_grad = self._get_gradient(im, target_label)
         im = im + self.magnitude * np.sign(im_grad.cpu().detach().numpy())
         if self.mode == "simple":
@@ -90,7 +84,7 @@ class FGSM:
                 print("no valid mode")
             return None
 
-        return im, self._get_label(im, target_label)
+        return im, self.get_label(im, target_label)
 
     def _train_on_label(self, images, labels, target_label):
         optimizer = optim.Adam(self.model.parameters(), lr=self.retrain_lr)
@@ -119,7 +113,7 @@ class FGSM:
 
         return loss_number
 
-    def _adapt(self, im, label, target_label):
+    def adapt(self, im, label, target_label):
         i = 0
         error = 1
         while error > self.retrain_threshold and i < self.retrain_max_gradient_steps:
@@ -135,19 +129,25 @@ class FGSM:
         steps = 0
         while prob < self.target_threshold and steps < self.max_fgsm_iterations:
             steps += 1
-            im, prob = self._fastgrad_step(im, target_label, base)
+            im, prob = self.fastgrad_step(im, target_label, base)
         if self.print:
             print("probability: Whitebox")
             print(prob)
         return im
 
-    def attack_on_label(self, im_url, save_url, target_label,):
+    def get_label(self, im, target_label):
+        self.model.eval()
+        output = self.model(torch.tensor(im).to(self.device))
+        label = torch.take(output, torch.tensor(target_label).to(self.device)).item()
+        return label
+
+    def attack_on_label(self, im_url, save_url, target_label):
         im = url_to_torch(im_url)
         labels = save_and_query(torch_to_saveable(im[-1]), save_url).reshape(1, LABEL_AMOUNT)
         stop = False
         steps = 0
 
-        mse = (labels[-1][target_label] - self._get_label([im[-1]], target_label)) ** 2
+        mse = (labels[-1][target_label] - self.get_label([im[-1]], target_label)) ** 2
         while stop is False:
             steps += 1
             if self.print:
@@ -156,9 +156,9 @@ class FGSM:
                 print("MSE White vs Black Box before retraining:")
                 print(mse)
             if self.retrain_mode == "last":
-                self._adapt(np.array([im[-1]]), np.array([labels[-1]]), target_label)
+                self.adapt(np.array([im[-1]]), np.array([labels[-1]]), target_label)
             elif self.retrain_mode == "full":
-                self._adapt(np.array(im), np.array(labels), target_label)
+                self.adapt(np.array(im), np.array(labels), target_label)
             elif self.retrain_mode == "none":
                 stop = True
             else:
@@ -184,7 +184,7 @@ class FGSM:
                 print("probability: Blackbox")
                 print(target)
                 print()
-            mse = (target - self._get_label([im[-1]], target_label))**2
+            mse = (target - self.get_label([im[-1]], target_label))**2
 
             if target > self.target_threshold:
                 stop = True
