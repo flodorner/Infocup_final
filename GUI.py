@@ -58,11 +58,15 @@ class AdversarialStudio:
                                  validate="focusout", validatecommand=self._islabel,
                                  invalidcommand=self._resetlabel)
         self.Label_param.insert(0, "4")
+
         self.Bound_text = Label(self.Interface, text="Noise Bound:")
-        self.Bound_param = Entry(self.Interface)
+        self.Bound_param = Entry(self.Interface, validate="focusout", validatecommand=self._isbound,
+                                 invalidcommand=self._resetbound)
         self.Bound_param.insert(0, FGSM_SPECS["bound"])
+
         self.Magnitude_text = Label(self.Interface, text="Noise Magnitude:")
-        self.Magnitude_param = Entry(self.Interface)
+        self.Magnitude_param = Entry(self.Interface, validate="focusout", validatecommand=self._ismagnitude,
+                                     invalidcommand=self._resetmagnitude)
         self.Magnitude_param.insert(0, FGSM_SPECS["magnitude"])
 
         self.Open_Dialog.grid(row=0, column=0)
@@ -114,24 +118,54 @@ class AdversarialStudio:
 
         advers_array, new_label = self.Generator.fastgrad_step(im, int(self.Label_param.get()), base)
         self.edit_img_PIL = Image.fromarray(torch_to_saveable(advers_array[0]))
+
+        edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
+        self.Edited_image.configure(image=edit_img)
+        self.Edited_image.image = edit_img
+
         self.Whitebox_text.configure(text=str("%.2f" % new_label))
         self._refresh_labels()
 
 
 
+
     def _islabel(self):
-        try:
-            if int(self.Label_param.get()) < LABEL_AMOUNT:
-                self._refresh_labels()
-                return True
-            else:
-                return False
-        except:
+        if not self.Label_param.get().isdigit():
             return False
+        elif int(self.Label_param.get()) < LABEL_AMOUNT:
+            self._refresh_labels()
+            return True
+        else:
+            return False
+
+    def _isbound(self):
+        if not self.Bound_param.get().isdigit():
+            return False
+        else:
+            self.Generator.bound = int(self.Bound_param.get())
+            return True
+
+    def _ismagnitude(self):
+        if not self.Magnitude_param.get().isdigit():
+            return False
+        else:
+            self.Generator.magnitude = int(self.Magnitude_param.get())
+            return True
+
+
 
     def _resetlabel(self, string="4"):
         self.Label_param.delete(0, 'end')
         self.Label_param.insert(0, string)
+
+
+    def _resetbound(self):
+        self.Bound_param.delete(0, 'end')
+        self.Bound_param.insert(0, FGSM_SPECS["bound"])
+
+    def _resetmagnitude(self):
+        self.Magnitude_param.delete(0, 'end')
+        self.Magnitude_param.insert(0, FGSM_SPECS["magnitude"])
 
     def _add_whitebox_info(self):
         self.Whitebox_description.configure(text="Whitebox prediction: ")
