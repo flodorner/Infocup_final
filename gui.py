@@ -1,5 +1,5 @@
 from config import *
-from utilities import url_to_im, url_to_torch, torch_to_saveable, query_to_labels, reverse_classnamedict, ServerError
+from utilities import url_to_array, url_to_torch, torch_to_array, query_to_labels, reverse_classnamedict, ServerError
 from sticker import stick, stick_trans
 from fgsm import FGSM
 
@@ -213,7 +213,7 @@ class AdversarialStudio:
     def _sticker_button(self, mode="full"):
         filename = filedialog.askopenfilename(initialdir=path.abspath(STICKER_DIRECTORY)+"\\"+self.Label_param.get())
         start = np.asarray(self.edit_img_PIL.convert("RGB"))
-        sticker = url_to_im(filename)
+        sticker = url_to_array(filename)
         if mode == "full":
             self.edit_img_PIL = Image.fromarray(stick(start, sticker))
         elif mode == "trans":
@@ -230,7 +230,7 @@ class AdversarialStudio:
         self.edit_img_PIL.save("GUI\\temp.png")
         label = query_to_labels("GUI\\temp.png")
         im = url_to_torch("GUI\\temp.png")
-        self.Generator.adapt(im, np.array([label]), int(self.Label_param.get()))
+        self.Generator.retrain(im, np.array([label]), int(self.Label_param.get()))
         self._add_whitebox_info()
 
     def _advers_attack(self):
@@ -240,7 +240,7 @@ class AdversarialStudio:
         base = url_to_torch("GUI\\temp.png")
 
         advers_array, new_label = self.Generator.fastgrad_step(im, int(self.Label_param.get()), base)
-        self.edit_img_PIL = Image.fromarray(torch_to_saveable(advers_array[0]))
+        self.edit_img_PIL = Image.fromarray(torch_to_array(advers_array[0]))
 
         edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
         self.Edited_image.configure(image=edit_img)
@@ -251,5 +251,3 @@ class AdversarialStudio:
 
 
 AdversarialStudio()
-
-#Surpress exceptions?!!!

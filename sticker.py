@@ -4,10 +4,8 @@ from os import remove
 from time import sleep
 from random import randint
 
-
-
 from config import *
-from utilities import url_to_im, save, save_and_query
+from utilities import url_to_array, save, save_and_query
 
 
 def stick_trans(image, sticker):
@@ -58,8 +56,8 @@ def sticker_attack(image_url, save_url, sticker_url=None, mode="full", label=Non
         label = int(sticker_url.split("\\")[0])
         
     sticker_url = STICKER_DIRECTORY + "\\" + sticker_url  
-    sticker = url_to_im(sticker_url)
-    image = url_to_im(image_url)
+    sticker = url_to_array(sticker_url)
+    image = url_to_array(image_url)
     
     if mode == "full":
         output = stick(image, sticker)
@@ -67,10 +65,11 @@ def sticker_attack(image_url, save_url, sticker_url=None, mode="full", label=Non
         output = stick_trans(image, sticker)
     else:
         raise Exception("mode is supposed to be full or transparent")
-
-    print(save_and_query(output, save_url)[label])
     
-    return None
+    conf=save_and_query(output, save_url)[label]
+    print(conf)
+    
+    return conf
 
 
 class StickerGenerator:

@@ -4,7 +4,7 @@ from os import remove
 import numpy as np
 
 from config import *
-from utilities import torch_to_saveable, url_to_torch, save_and_query, query_to_labels, query_with_labelnums
+from utilities import torch_to_array, url_to_torch, save_and_query, query_to_labels, query_names
 from distill import create_distilled
 
 
@@ -24,7 +24,7 @@ def project_l_2(x, base, bound):
 
 def preview_im(im_url):
     print("Labels with highest confidence:")
-    query_with_labelnums(im_url)
+    query_names(im_url)
     print("try attacking one of those labels!")
 
 
@@ -70,22 +70,6 @@ class FGSM:
 
         return im_grad
 
-    def fastgrad_step(self, im, target_label, base):
-        im_grad = self._get_gradient(im, target_label)
-        im = im + self.magnitude * np.sign(im_grad.cpu().detach().numpy())
-        if self.mode == "simple":
-            pass
-        elif self.mode == "l_2":
-            im = project_l_2(im, base, self.bound)
-        elif self.mode == "l_inf":
-            im = project_l_inf(im, base, self.bound)
-        else:
-            if self.print:
-                print("no valid mode")
-            return None
-
-        return im, self.get_label(im, target_label)
-
     def _train_on_label(self, images, labels, target_label):
         optimizer = optim.Adam(self.model.parameters(), lr=self.retrain_lr)
         label_num = len(labels[0])
@@ -113,17 +97,6 @@ class FGSM:
 
         return loss_number
 
-    def adapt(self, im, label, target_label):
-        i = 0
-        error = 1
-        while error > self.retrain_threshold and i < self.retrain_max_gradient_steps:
-            i = i + 1
-            error = self._train_on_label(im, label, target_label)
-        if self.print:
-            print("MSE White vs Black Box after retraining:")
-            print(error)
-        return i, error
-
     def _create_advers(self, im, target_label, base):
         prob = 0
         steps = 0
@@ -135,15 +108,42 @@ class FGSM:
             print(prob)
         return im
 
+    def retrain(self, im, label, target_label):
+        i = 0
+        error = 1
+        while error > self.retrain_threshold and i < self.retrain_max_gradient_steps:
+            i = i + 1
+            error = self._train_on_label(im, label, target_label)
+        if self.print:
+            print("MSE White vs Black Box after retraining:")
+            print(error)
+        return i, error
+
     def get_label(self, im, target_label):
         self.model.eval()
         output = self.model(torch.tensor(im).to(self.device))
         label = torch.take(output, torch.tensor(target_label).to(self.device)).item()
         return label
 
+    def fastgrad_step(self, im, target_label, base):
+        im_grad = self._get_gradient(im, target_label)
+        im = im + self.magnitude * np.sign(im_grad.cpu().detach().numpy())
+        if self.mode == "simple":
+            pass
+        elif self.mode == "l_2":
+            im = project_l_2(im, base, self.bound)
+        elif self.mode == "l_inf":
+            im = project_l_inf(im, base, self.bound)
+        else:
+            if self.print:
+                print("no valid mode")
+            return None
+
+        return im, self.get_label(im, target_label)
+
     def attack_on_label(self, im_url, save_url, target_label):
         im = url_to_torch(im_url)
-        labels = save_and_query(torch_to_saveable(im[-1]), save_url).reshape(1, LABEL_AMOUNT)
+        labels = save_and_query(torch_to_array(im[-1]), save_url).reshape(1, LABEL_AMOUNT)
         stop = False
         steps = 0
 
@@ -156,9 +156,9 @@ class FGSM:
                 print("MSE White vs Black Box before retraining:")
                 print(mse)
             if self.retrain_mode == "last":
-                self.adapt(np.array([im[-1]]), np.array([labels[-1]]), target_label)
+                self.retrain(np.array([im[-1]]), np.array([labels[-1]]), target_label)
             elif self.retrain_mode == "full":
-                self.adapt(np.array(im), np.array(labels), target_label)
+                self.retrain(np.array(im), np.array(labels), target_label)
             elif self.retrain_mode == "none":
                 stop = True
             else:
@@ -177,7 +177,7 @@ class FGSM:
                 break
             im = np.concatenate((im, advers))
 
-            new_label = save_and_query(torch_to_saveable(im[-1]), save_url).reshape(1, LABEL_AMOUNT)
+            new_label = save_and_query(torch_to_array(im[-1]), save_url).reshape(1, LABEL_AMOUNT)
             labels = np.concatenate((labels, new_label))
             target = labels[-1][target_label]
             if self.print:

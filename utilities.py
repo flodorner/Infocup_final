@@ -52,6 +52,7 @@ classnamedict = {'Zulässige Höchstgeschwindigkeit (20)': 0,
 
 reverse_classnamedict = {v: k for k, v in classnamedict.items()}
 
+
 def dict_parser(string):
     dictionary = {}
     strings = string.split("}")[:-1]
@@ -97,7 +98,7 @@ def query_to_labels(image_path):
     return class_labels_to_one_hot(query_to_text(image_path))   
 
 
-def url_to_im(imurl):
+def url_to_array(imurl):
     im = Image.open(imurl)
     im = im.convert("RGB")
     im = np.asarray(im)
@@ -106,7 +107,7 @@ def url_to_im(imurl):
 
 
 def url_to_torch(imurl):
-    im = url_to_im(imurl)
+    im = url_to_array(imurl)
     im = im.astype(float)
     im = im.reshape(1, im.shape[2], im.shape[0], im.shape[1])
     return im
@@ -129,7 +130,7 @@ def save_and_query(im, save_url, delete=False):
     return label
 
 
-def query_with_labelnums(im_url):
+def query_names(im_url):
     dictionary = dict_parser(query_to_text(im_url))
     for key in dictionary:
         if dictionary[key] != 0:
@@ -138,7 +139,7 @@ def query_with_labelnums(im_url):
     return dictionary
 
 
-def torch_to_saveable(im):
+def torch_to_array(im):
     out_im = np.array(im)
     out_im = out_im.reshape(out_im.shape[1], out_im.shape[2], out_im.shape[0])
     out_im = np.maximum(np.minimum(out_im, np.zeros(out_im.shape) + 255), np.zeros(out_im.shape))
