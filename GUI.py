@@ -100,7 +100,7 @@ class AdversarialStudio:
         self.Root.mainloop()
 
     def _get_max_label(self):
-        self.orig_img_PIL.save("GUI\\temp.png")
+        self.edit_img_PIL.save("GUI\\temp.png")
         try:
             label = np.argmax(query_to_labels("GUI\\temp.png"))
         except ServerError:
@@ -222,6 +222,7 @@ class AdversarialStudio:
         self.Edited_image.configure(image=edit_img)
         self.Edited_image.image = edit_img
 
+        self._resetlabel(str(self._get_max_label()))
         self._refresh_labels()
         self._add_whitebox_info()
 
