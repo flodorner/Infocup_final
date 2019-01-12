@@ -1,5 +1,6 @@
 # coding=utf-8
 from config import *
+
 import numpy as np
 from os import remove
 import requests
