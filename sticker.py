@@ -33,15 +33,15 @@ def stick(image, sticker):
 
 
 def load_random_sticker(label):
-    imlist = glob(STICKER_DIRECTORY + "\\" + str(label) + "\\*")
+    imlist = glob(STICKER_DIRECTORY + "/" + str(label) + "/*")
 
     if len(imlist) == 0:
         raise Exception("no stickers with this label available")
     try:
-        imlist.remove(STICKER_DIRECTORY + "\\" + str(label) + "\\desktop.ini")
+        imlist.remove(STICKER_DIRECTORY + "/" + str(label) + "/desktop.ini")
     except FileNotFoundError:
         pass
-    sticker_url = "\\" + str(label) + "\\" + imlist[randint(0, len(imlist)-1)].split("\\")[-1]
+    sticker_url = "/" + str(label) + "/" + imlist[randint(0, len(imlist)-1)].split("/")[-1]
     
     return sticker_url
 
@@ -53,9 +53,9 @@ def sticker_attack(image_url, save_url, sticker_url=None, mode="full", label=Non
         sticker_url = load_random_sticker(label)
         
     elif label is None:
-        label = int(sticker_url.split("\\")[0])
+        label = int(sticker_url.split("/")[0])
         
-    sticker_url = STICKER_DIRECTORY + "\\" + sticker_url  
+    sticker_url = STICKER_DIRECTORY + "/" + sticker_url
     sticker = url_to_array(sticker_url)
     image = url_to_array(image_url)
     
@@ -136,7 +136,7 @@ class StickerGenerator:
         else: 
             prob = np.zeros(LABEL_AMOUNT)
         if prob[label] > save_threshold:
-            save_url = STICKER_DIRECTORY + "\\" + str(label) + "\\" + title +\
+            save_url = STICKER_DIRECTORY + "/" + str(label) + "/" + title +\
                        str(pixel_threshold) + str(prob[label]) + ".png"
             save(basic_im, save_url)
             print("Sticker saved under " + save_url)

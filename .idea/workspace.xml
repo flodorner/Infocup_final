@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6140b9e8-f5df-48f3-b869-bc8a3617d410" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GUI/temp.png" beforeDir="false" afterPath="$PROJECT_DIR$/GUI/temp.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/model_1x4_noisetrain_pre7150.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/distill.py" beforeDir="false" afterPath="$PROJECT_DIR$/distill.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fgsm.py" beforeDir="false" afterPath="$PROJECT_DIR$/fgsm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gui.py" beforeDir="false" afterPath="$PROJECT_DIR$/gui.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sticker.py" beforeDir="false" afterPath="$PROJECT_DIR$/sticker.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/utilities.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -60,11 +52,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sticker.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="147">
-              <caret line="102" column="16" lean-forward="true" selection-start-line="102" selection-start-column="16" selection-end-line="102" selection-end-column="16" />
+            <state relative-caret-position="674">
+              <caret line="145" column="33" lean-forward="true" selection-start-line="145" selection-start-column="33" selection-end-line="145" selection-end-column="33" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -96,10 +88,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gui.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
+            <state relative-caret-position="4071">
               <caret line="240" lean-forward="true" selection-start-line="240" selection-end-line="240" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
@@ -168,11 +160,11 @@
         <option value="$PROJECT_DIR$/FGSM.py" />
         <option value="$PROJECT_DIR$/config.py" />
         <option value="$PROJECT_DIR$/GUI.py" />
-        <option value="$PROJECT_DIR$/sticker.py" />
         <option value="$PROJECT_DIR$/fgsm.py" />
         <option value="$PROJECT_DIR$/utilities.py" />
         <option value="$PROJECT_DIR$/gui.py" />
         <option value="$PROJECT_DIR$/distill.py" />
+        <option value="$PROJECT_DIR$/sticker.py" />
       </list>
     </option>
   </component>
@@ -318,23 +310,22 @@
       <workItem from="1547284425977" duration="481000" />
       <workItem from="1547286678457" duration="150000" />
       <workItem from="1547287045241" duration="7000" />
-      <workItem from="1547287914406" duration="1125000" />
+      <workItem from="1547287914406" duration="1221000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="62417000" />
+    <option name="totallyTimeSpent" value="62513000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.3491471" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.4084507" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.4084507" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3997833" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -394,16 +385,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sticker.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="102" column="16" lean-forward="true" selection-start-line="102" selection-start-column="16" selection-end-line="102" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/distill.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
@@ -426,10 +407,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/gui.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
+        <state relative-caret-position="4071">
           <caret line="240" lean-forward="true" selection-start-line="240" selection-end-line="240" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sticker.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="674">
+          <caret line="145" column="33" lean-forward="true" selection-start-line="145" selection-start-column="33" selection-end-line="145" selection-end-column="33" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
