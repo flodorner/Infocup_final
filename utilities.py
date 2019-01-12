@@ -100,6 +100,11 @@ def query_to_labels(image_path):
 
 def url_to_array(imurl):
     im = Image.open(imurl)
+    # Avoid unintend behaviour for RGBA-Images
+    if np.array(im).shape[2] == 4:
+        new_image = Image.new("RGBA", im.size, "WHITE")
+        new_image.paste(im, (0, 0), im)
+        im = new_image
     im = im.convert("RGB")
     im = np.asarray(im)
     im.setflags(write=True)

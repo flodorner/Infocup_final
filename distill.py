@@ -5,8 +5,10 @@ import torch.nn.functional as f
 
 def create_distilled(device):
     model = ResNet(num_blocks=(1, 1, 1, 1), prefilter=7, output_dim=43, norm=False).to(device)
-    model.load_state_dict(
-        torch.load("Models/ResNet.pt"))
+    if not torch.cuda.is_available():
+        model.load_state_dict(torch.load("Models/ResNet.pt", map_location="cpu"))
+    else:
+        model.load_state_dict(torch.load("Models/ResNet.pt"))
     return model
 
 
