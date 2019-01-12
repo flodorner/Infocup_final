@@ -66,8 +66,7 @@ def sticker_attack(image_url, save_url, sticker_url=None, mode="full", label=Non
     else:
         raise Exception("mode is supposed to be full or transparent")
     
-    conf=save_and_query(output, save_url)[label]
-    print(conf)
+    conf = save_and_query(output, save_url)[label]
     
     return conf
 

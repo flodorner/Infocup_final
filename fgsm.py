@@ -24,7 +24,7 @@ def project_l_2(x, base, bound):
 
 def preview_im(im_url):
     print("Labels with highest confidence:")
-    query_names(im_url)
+    print(query_names(im_url))
     print("try attacking one of those labels!")
 
 

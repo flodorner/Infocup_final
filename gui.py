@@ -21,10 +21,11 @@ class AdversarialStudio:
         self.Root.resizable(False, False)
 
         self.Generator = FGSM()
+        self.Generator.print = False
 
         self.Original_description = Label(self.Root, text="Original Image:")
         self.Original_text = Label(self.Root, text="")
-        self.orig_img_PIL = Image.open("GUI\\grey.png").resize((IMAGE_SIZE, IMAGE_SIZE))
+        self.orig_img_PIL = Image.open("GUI/grey.png").resize((IMAGE_SIZE, IMAGE_SIZE))
         orig_img = ImageTk.PhotoImage(self.orig_img_PIL.resize((256, 256)))
         self.Original_image = Label(self.Root, image=orig_img)
 
@@ -100,25 +101,25 @@ class AdversarialStudio:
         self.Root.mainloop()
 
     def _get_max_label(self):
-        self.edit_img_PIL.save("GUI\\temp.png")
+        self.edit_img_PIL.save("GUI/temp.png")
         try:
-            label = np.argmax(query_to_labels("GUI\\temp.png"))
+            label = np.argmax(query_to_labels("GUI/temp.png"))
         except ServerError:
             label = 4
         return label
 
     def _get_orig_conf(self):
-        self.orig_img_PIL.save("GUI\\temp.png")
+        self.orig_img_PIL.save("GUI/temp.png")
         try:
-            conf = query_to_labels("GUI\\temp.png")[int(self.Label_param.get())]
+            conf = query_to_labels("GUI/temp.png")[int(self.Label_param.get())]
         except ServerError:
             conf = "Error: Try Reloading"
         return conf
 
     def _get_edit_conf(self):
-        self.edit_img_PIL.save("GUI\\temp.png")
+        self.edit_img_PIL.save("GUI/temp.png")
         try:
-            conf = query_to_labels("GUI\\temp.png")[int(self.Label_param.get())]
+            conf = query_to_labels("GUI/temp.png")[int(self.Label_param.get())]
         except ServerError:
             conf = "Error: Try Reloading"
         return conf
@@ -162,8 +163,8 @@ class AdversarialStudio:
 
     def _add_whitebox_info(self):
         self.Whitebox_description.configure(text="Whitebox prediction: ")
-        self.edit_img_PIL.save("GUI\\temp.png")
-        im = url_to_torch("GUI\\temp.png")
+        self.edit_img_PIL.save("GUI/temp.png")
+        im = url_to_torch("GUI/temp.png")
 
         text = str("%.2f" % self.Generator.get_label(im, int(self.Label_param.get())))
         self.Whitebox_text.configure(text=text)
@@ -207,11 +208,10 @@ class AdversarialStudio:
 
     def _save_button(self):
         filename = filedialog.asksaveasfilename(filetypes=[("png files", "*.png")])
-        print(filename)
         self.edit_img_PIL.save(filename+".png")
 
     def _sticker_button(self, mode="full"):
-        filename = filedialog.askopenfilename(initialdir=path.abspath(STICKER_DIRECTORY)+"\\"+self.Label_param.get())
+        filename = filedialog.askopenfilename(initialdir=path.abspath(STICKER_DIRECTORY)+"/"+self.Label_param.get())
         start = np.asarray(self.edit_img_PIL.convert("RGB"))
         sticker = url_to_array(filename)
         if mode == "full":
@@ -227,17 +227,17 @@ class AdversarialStudio:
         self._add_whitebox_info()
 
     def _retrain_whitebox(self):
-        self.edit_img_PIL.save("GUI\\temp.png")
-        label = query_to_labels("GUI\\temp.png")
-        im = url_to_torch("GUI\\temp.png")
+        self.edit_img_PIL.save("GUI/temp.png")
+        label = query_to_labels("GUI/temp.png")
+        im = url_to_torch("GUI/temp.png")
         self.Generator.retrain(im, np.array([label]), int(self.Label_param.get()))
         self._add_whitebox_info()
 
     def _advers_attack(self):
-        self.edit_img_PIL.save("GUI\\temp.png")
-        im = url_to_torch("GUI\\temp.png")
-        self.orig_img_PIL.save("GUI\\temp.png")
-        base = url_to_torch("GUI\\temp.png")
+        self.edit_img_PIL.save("GUI/temp.png")
+        im = url_to_torch("GUI/temp.png")
+        self.orig_img_PIL.save("GUI/temp.png")
+        base = url_to_torch("GUI/temp.png")
 
         advers_array, new_label = self.Generator.fastgrad_step(im, int(self.Label_param.get()), base)
         self.edit_img_PIL = Image.fromarray(torch_to_array(advers_array[0]))

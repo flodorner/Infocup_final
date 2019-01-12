@@ -6,7 +6,7 @@ import torch.nn.functional as f
 def create_distilled(device):
     model = ResNet(num_blocks=(1, 1, 1, 1), prefilter=7, output_dim=43, norm=False).to(device)
     model.load_state_dict(
-        torch.load("Models\\model_1x4_noisetrain_pre7150.pt"))
+        torch.load("Models/ResNet.pt"))
     return model
 
 
@@ -17,7 +17,6 @@ class ResNet(nn.Module):
         self.norm = norm
         self.in_planes = 64
         self.output_dim = output_dim
-        # changed
         self.conv1 = nn.Conv2d(nc, 64, kernel_size=prefilter, stride=2, padding=1, bias=True)
         self.bn1 = nn.BatchNorm2d(64)
         self.layer1 = self._make_layer(BasicBlock, 64, num_blocks[0], stride=1)
@@ -67,19 +66,9 @@ class BasicBlock(nn.Module):
             self.shortcut = nn.Sequential(
                 nn.Conv2d(in_planes, planes, kernel_size=1, stride=stride, bias=False), nn.BatchNorm2d(planes))
 
-        torch.nn.init.kaiming_normal_(self.conv1.weight)
-        torch.nn.init.kaiming_normal_(self.conv2.weight)
-
-        self.shortcut.apply(init_weights)
-
     def forward(self, x):
         out = torch.relu(self.bn1(self.conv1(x)))
         out = self.bn2(self.conv2(out))
         out += self.shortcut(x)
         out = torch.relu(out)
         return out
-
-
-def init_weights(m):
-    if type(m) == nn.Linear:
-        torch.nn.init.kaiming_normal_(m.weight)

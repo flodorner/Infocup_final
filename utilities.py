@@ -135,7 +135,7 @@ def query_names(im_url):
     for key in dictionary:
         if dictionary[key] != 0:
             prob = dictionary[key]
-            print(key + " (label " + str(classnamedict[key]) + "): " + str(prob))
+            dictionary[key] = (key + " (label " + str(classnamedict[key]) + "): " + str(prob))
     return dictionary
 
 
