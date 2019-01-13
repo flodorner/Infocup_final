@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="6140b9e8-f5df-48f3-b869-bc8a3617d410" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Readme.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sticker.py" beforeDir="false" afterPath="$PROJECT_DIR$/sticker.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -56,8 +57,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sticker.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="108" column="76" lean-forward="true" selection-start-line="108" selection-start-column="76" selection-end-line="108" selection-end-column="76" />
+            <state relative-caret-position="425">
+              <caret line="43" column="63" selection-start-line="43" selection-start-column="63" selection-end-line="43" selection-end-column="63" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -92,7 +93,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gui.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
+            <state relative-caret-position="51">
               <caret line="13" column="24" selection-start-line="13" selection-start-column="24" selection-end-line="13" selection-end-column="24" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
@@ -172,8 +173,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="384" />
-    <option name="y" value="-8" />
+    <option name="x" value="241" />
+    <option name="y" value="427" />
     <option name="width" value="1344" />
     <option name="height" value="722" />
   </component>
@@ -314,14 +315,17 @@
       <workItem from="1547373516675" duration="17000" />
       <workItem from="1547374192782" duration="9280000" />
       <workItem from="1547393143900" duration="391000" />
+      <workItem from="1547394680952" duration="44000" />
+      <workItem from="1547395133100" duration="323000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="79481000" />
+    <option name="totallyTimeSpent" value="79848000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-1608" y="177" width="1616" height="876" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.44402984" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -410,7 +414,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/gui.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
+        <state relative-caret-position="51">
           <caret line="13" column="24" selection-start-line="13" selection-start-column="24" selection-end-line="13" selection-end-column="24" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
@@ -420,8 +424,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sticker.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="108" column="76" lean-forward="true" selection-start-line="108" selection-start-column="76" selection-end-line="108" selection-end-column="76" />
+        <state relative-caret-position="425">
+          <caret line="43" column="63" selection-start-line="43" selection-start-column="63" selection-end-line="43" selection-end-column="63" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

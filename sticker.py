@@ -31,13 +31,17 @@ def stick(image, sticker):
    
     return result
 
-
 def load_random_sticker(label):
     imlist = glob(STICKER_DIRECTORY + "/" + str(label) + "/*")
+    print(imlist)
     if len(imlist) == 0:
         raise Exception("no stickers with this label available")
     try:
-        imlist.remove("/" + str(label) + "/desktop.ini")
+        imlist.remove(STICKER_DIRECTORY + "/" + str(label) + "/desktop.ini")
+    except ValueError:
+        pass
+    try:
+        imlist.remove(STICKER_DIRECTORY + "/" + str(label) + "/Placeholder.txt")
     except ValueError:
         pass
     sticker_url = imlist[randint(0, len(imlist)-1)]
@@ -124,7 +128,7 @@ class StickerGenerator:
         return None
 
     @staticmethod
-    def sticker_attack(image_url, save_url, sticker_url=None, mode="full", label=None):
+    def sticker_attack(image_url, save_url, sticker_url=None, label=None, mode="full"):
         if sticker_url is None:
             if label is None:
                 label = 5
