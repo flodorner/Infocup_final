@@ -34,41 +34,15 @@ def stick(image, sticker):
 
 def load_random_sticker(label):
     imlist = glob(STICKER_DIRECTORY + "/" + str(label) + "/*")
-
     if len(imlist) == 0:
         raise Exception("no stickers with this label available")
     try:
-        imlist.remove(STICKER_DIRECTORY + "/" + str(label) + "/desktop.ini")
-    except FileNotFoundError:
+        imlist.remove("/" + str(label) + "/desktop.ini")
+    except ValueError:
         pass
-    sticker_url = "/" + str(label) + "/" + imlist[randint(0, len(imlist)-1)].split("/")[-1]
-    
+    sticker_url = "/" + imlist[randint(0, len(imlist)-1)].split("/")[-1]
+    print(sticker_url)
     return sticker_url
-
-
-def sticker_attack(image_url, save_url, sticker_url=None, mode="full", label=None): 
-    if sticker_url is None:
-        if label is None:
-            label = 5
-        sticker_url = load_random_sticker(label)
-        
-    elif label is None:
-        label = int(sticker_url.split("/")[0])
-        
-    sticker_url = STICKER_DIRECTORY + "/" + sticker_url
-    sticker = url_to_array(sticker_url)
-    image = url_to_array(image_url)
-    
-    if mode == "full":
-        output = stick(image, sticker)
-    elif mode == "transparent":
-        output = stick_trans(image, sticker)
-    else:
-        raise Exception("mode is supposed to be full or transparent")
-    
-    conf = save_and_query(output, save_url)[label]
-    
-    return conf
 
 
 class StickerGenerator:
@@ -92,10 +66,10 @@ class StickerGenerator:
         if self.num_rows.is_integer():
             self.num_rows = int(self.num_rows)
             self.probarray = np.zeros((self.num_rows, self.num_rows, 3, LABEL_AMOUNT))
-            self._generate_pixels()
-            
+
         else:
-            print("Error: Image size - 2 * fringe and pixelsize should be dividable by stride")
+            print("Error: Image size - 2 * fringe and pixelsize should be dividable by stride. Generation of stickers"
+                  "won't be possible without reinitalization!")
             
         try:
             remove("temp.png")
@@ -119,7 +93,7 @@ class StickerGenerator:
             pass
         return None
 
-    def make_sticker(self, label, title="", pixel_threshold=0.01, save_threshold=0.9):
+    def _make_sticker(self, label, title="", pixel_threshold=0.01, save_threshold=0.9):
 
         basic_im = np.copy(self.start)
         for i in range(self.num_rows):
@@ -140,10 +114,40 @@ class StickerGenerator:
                        str(pixel_threshold) + str(prob[label]) + ".png"
             save(basic_im, save_url)
             print("Sticker saved under " + save_url)
-            
         try:
             remove("temp.png")
         except FileNotFoundError:
             pass
         
         return basic_im
+
+    def sticker_batch(self, title="", pixel_threshold=0.01, save_threshold=0.9):
+        self._generate_pixels()
+        for i in range(LABEL_AMOUNT):
+            self._make_sticker(i, title=title, pixel_threshold=pixel_threshold, save_threshold=save_threshold)
+        return None
+
+    @staticmethod
+    def sticker_attack(image_url, save_url, sticker_url=None, mode="full", label=None):
+        if sticker_url is None:
+            if label is None:
+                label = 5
+            sticker_url = load_random_sticker(label)
+
+        elif label is None:
+            label = int(sticker_url.split("/")[0])
+
+        sticker_url = STICKER_DIRECTORY + "/" + sticker_url
+        sticker = url_to_array(sticker_url)
+        image = url_to_array(image_url)
+
+        if mode == "full":
+            output = stick(image, sticker)
+        elif mode == "transparent":
+            output = stick_trans(image, sticker)
+        else:
+            raise Exception("mode is supposed to be full or transparent")
+
+        conf = save_and_query(output, save_url)[label]
+
+        return conf

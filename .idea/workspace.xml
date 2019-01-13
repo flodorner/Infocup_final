@@ -3,8 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="6140b9e8-f5df-48f3-b869-bc8a3617d410" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GUI/temp.png" beforeDir="false" afterPath="$PROJECT_DIR$/GUI/temp.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Readme.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Test.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sticker.py" beforeDir="false" afterPath="$PROJECT_DIR$/sticker.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,11 +34,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/fgsm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3553">
-              <caret line="209" column="52" lean-forward="true" selection-start-line="209" selection-start-column="52" selection-end-line="209" selection-end-column="52" />
+            <state relative-caret-position="374">
+              <caret line="31" column="10" selection-start-line="31" selection-start-column="6" selection-end-line="31" selection-end-column="10" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
               </folding>
@@ -48,17 +49,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="14" selection-start-line="14" selection-end-line="14" />
+            <state relative-caret-position="51">
+              <caret line="3" selection-start-line="3" selection-end-line="3" selection-end-column="12" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sticker.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="290">
-              <caret line="149" lean-forward="true" selection-start-line="149" selection-end-line="149" />
+            <state relative-caret-position="289">
+              <caret line="38" column="8" lean-forward="true" selection-start-line="38" selection-start-column="8" selection-end-line="38" selection-end-column="8" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -69,7 +70,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/distill.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
+            <state relative-caret-position="323">
               <caret line="21" column="93" selection-start-line="21" selection-start-column="93" selection-end-line="21" selection-end-column="93" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
@@ -90,8 +91,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gui.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
-              <caret line="56" column="65" lean-forward="true" selection-start-line="56" selection-start-column="65" selection-end-line="56" selection-end-column="65" />
+            <state relative-caret-position="221">
+              <caret line="44" column="102" selection-start-line="44" selection-start-column="102" selection-end-line="44" selection-end-column="102" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -110,7 +111,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>3</find>
       <find>FGSM</find>
       <find>_get_label</find>
       <find>_ada</find>
@@ -140,6 +140,7 @@
       <find>load</find>
       <find>device</find>
       <find>validat</find>
+      <find>make_</find>
     </findStrings>
     <replaceStrings>
       <replace>FGSM_SPECS</replace>
@@ -160,18 +161,18 @@
         <option value="$PROJECT_DIR$/config.py" />
         <option value="$PROJECT_DIR$/GUI.py" />
         <option value="$PROJECT_DIR$/fgsm.py" />
-        <option value="$PROJECT_DIR$/sticker.py" />
         <option value="$PROJECT_DIR$/distill.py" />
         <option value="$PROJECT_DIR$/utilities.py" />
         <option value="$PROJECT_DIR$/gui.py" />
+        <option value="$PROJECT_DIR$/sticker.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1613" />
-    <option name="height" value="873" />
+    <option name="x" value="-1658" />
+    <option name="y" value="177" />
+    <option name="width" value="1344" />
+    <option name="height" value="722" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -305,14 +306,19 @@
       <workItem from="1547314928844" duration="9000" />
       <workItem from="1547315530122" duration="1778000" />
       <workItem from="1547320581557" duration="1948000" />
+      <workItem from="1547371158851" duration="674000" />
+      <workItem from="1547373211746" duration="18000" />
+      <workItem from="1547373516675" duration="17000" />
+      <workItem from="1547374192782" duration="2193000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="69101000" />
+    <option name="totallyTimeSpent" value="72003000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-1608" y="177" width="1616" height="876" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.44402984" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -362,10 +368,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config.py">
+    <entry file="file://$PROJECT_DIR$/gui.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" selection-start-line="14" selection-end-line="14" />
+        <state relative-caret-position="221">
+          <caret line="44" column="102" selection-start-line="44" selection-start-column="102" selection-end-line="44" selection-end-column="102" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -378,7 +387,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/distill.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
+        <state relative-caret-position="323">
           <caret line="21" column="93" selection-start-line="21" selection-start-column="93" selection-end-line="21" selection-end-column="93" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
@@ -386,32 +395,29 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gui.py">
+    <entry file="file://$PROJECT_DIR$/config.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="56" column="65" lean-forward="true" selection-start-line="56" selection-start-column="65" selection-end-line="56" selection-end-column="65" />
+        <state relative-caret-position="51">
+          <caret line="3" selection-start-line="3" selection-end-line="3" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fgsm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="31" column="10" selection-start-line="31" selection-start-column="6" selection-end-line="31" selection-end-column="10" />
           <folding>
-            <element signature="e#0#20#0" expanded="true" />
+            <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sticker.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="149" lean-forward="true" selection-start-line="149" selection-end-line="149" />
+        <state relative-caret-position="289">
+          <caret line="38" column="8" lean-forward="true" selection-start-line="38" selection-start-column="8" selection-end-line="38" selection-end-column="8" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fgsm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3553">
-          <caret line="209" column="52" lean-forward="true" selection-start-line="209" selection-start-column="52" selection-end-line="209" selection-end-column="52" />
-          <folding>
-            <element signature="e#0#12#0" expanded="true" />
           </folding>
         </state>
       </provider>
