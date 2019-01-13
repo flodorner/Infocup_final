@@ -30,7 +30,7 @@ gui:
 	Durch den Retrain Whitebox Knopf etwas weiter oben lässt sich die Whitebox anpassen, 
 	um die Diskrepanz in den Konfidenzen zu reduzieren. 
 
-	Durch den Add Noise Knopf kann Rauschen zu dem Bild auf der rechten Seite hintugefügt werden,
+	Durch den Add Noise Knopf kann Rauschen zu dem Bild auf der rechten Seite hinzugefügt werden,
 	das die Konfidenz der Black und der Whitebox in die gewählte Klasse  im Normalfall erhöhen sollte.
 	Darüber können die Klasse (Label), die Stärke des zugefügten Rauschens (Noise Magnitude), 
 	sowie der maximale Abstand zwischen dem originalen und veränderten Bild pro Pixel und Kanal (Noise Bound) 
@@ -40,33 +40,33 @@ gui:
 	Durch den Reset image Knopf wir das veränderte Bild wieder auf das original zurückgesetzt.
 
 	Durch den Add sticker und Add transparent Sticker Knopf können mit der sticker.py Klasse generierte Sticker 
-	auf das Bild geklebt werden, entweder intransparent, oder aber Kanalalweise ("transparent"). 
+	auf das Bild geklebt werden, entweder intransparent, oder aber Kanalweise ("transparent"). 
 	Dabei ist zu beachten, dass die "transparenten" Sticker auf weißen Hintergrund nicht sichtbar sind 
 	(Das liegt daran, dass der Angriff für maximale Effektivität nur niedrige Farbkanalwerte durch Hohe ersetzt
 	und nicht umgekehrt).
 	Will man den Effekt eines transparenten Stickers auf weißem Hintergrund dennoch erreichen,
-	lässt sich dies durch Anwenden des nichttransparenten Sticker, einstellen von noise magnitude = 0 sowie einem
+	lässt sich dies durch Anwenden des nicht transparenten Sticker, einstellen von noise magnitude = 0 sowie einem
 	hohen noise bound und drücken des add noise Knopes erreichen. Die durch den Sticker erhöhten Farbkanäle werden
 	dann reduziert, um nah genug am Original zu sein, was dem gewünschten Effekt gleichkommt.
 
 
 sticker:
-	Die Klasse StickerGenerator kann mit den Werten pixelsize und fringe initalisiert werden (standardeinstellungen: 3, 17), die die Größe der Pixelblöcke, und deren Abstand zum Rand auf beiden Seiten bestimmen. 
+	Die Klasse StickerGenerator kann mit den Werten pixelsize und fringe initialisiert werden (standardeinstellungen: 3, 17), die die Größe der Pixelblöcke, und deren Abstand zum Rand auf beiden Seiten bestimmen. 
 	Dabei sollte die Bildgröße Minus 2 Mal fringe durch Pixelsize teilbar sein.
-		Mit der (Instanz)Methode sticker_batch können nun Sticker generiert werden, die in dem Subverzeichniss für die entsprechende Klasse gespeichert werden. Mit dem optionalen Argument 	
+		Mit der (Instanz)Methode sticker_batch können nun Sticker generiert werden, die in dem Subverzeichnis für die entsprechende Klasse gespeichert werden. Mit dem optionalen Argument 	
 		title (ohne Angabe "") kann ein Titel für den Stickerbatch bestimmt werden. Für die einzlnen Sticker werden der Pixel_threshold und die Konfidenz an den Namen anghängt. 
-		Pixel_threshold (ohne Angabe 0.01)  gibt vor, wieviel Konfidenzgewinn ein Pixel bringen muss um in den Sticker aufgenommen zu werden.
+		Pixel_threshold (ohne Angabe 0.01)  gibt vor, wie viel Konfidenzgewinn ein Pixel bringen muss um in den Sticker aufgenommen zu werden.
 		Es werden diejenigen Sticker gespeichert, die auf schwarzem Hintergrund eine Konfidenz von mehr als save_threshold (ohne Angabe 0.9) für die zugehörige Klasse 
 
 		Mit der Methode sticker_attack kann nun ein Sticker auf ein Bild geklebt und dieses gespeichert werden.
 		Als input erhält die Methode die Url des Bildes und eine Ziel-Url zum Abspeichern als strings (in Anführungszeichen). Optional können eine bestimmte Zielklasse ("label", als Zahl codiert, siehe unten), 
-		oder ein bestimmter Sticker als Url ("sticker_url") angegeben werden. Durch setzen des optionalen Argumentes "mode" auf "transparent" kann ein Sticker zudem transparent ansttatt
+		oder ein bestimmter Sticker als Url ("sticker_url") angegeben werden. Durch setzen des optionalen Argumentes "mode" auf "transparent" kann ein Sticker zudem transparent anstatt
 		füllend aufgeklebt werden.
 fgsm:
-	Die Klasse FGSM kann mit einem Pytorch model als Whitebox, sowie einem Parameter cuda, der bestimmt ob cuda, falls vorhanden zur Beschleuingung genutzt werden soll, initialisiert werden.
+	Die Klasse FGSM kann mit einem Pytorch model als Whitebox, sowie einem Parameter cuda, der bestimmt ob cuda, falls vorhanden zur Beschleunigung genutzt werden soll, initialisiert werden.
 	Ohne Angabe eines models wird die von uns trainierte Whitebox verwendet. 
 		Die Methode attack_on_label erhält die Url für ein Basisbild, eine Url zum speichern, sowie ein label, zu dessen Erkennung das angegriffene Netz gebracht werden soll. 
-		Danach wird eine Iterierte fast gradient sign Attacke inklusive anpassung der Whitebox ausgehend von dem Basisbild durchgeführt und das Ergebniss gespeichert. Die genauen Parameter der Attacke
+		Danach wird eine Iterierte fast gradient sign Attacke inklusive Anpassung der Whitebox ausgehend von dem Basisbild durchgeführt und das Ergebnis gespeichert. Die genauen Parameter der Attacke
 		lassen sich durch ändern von FGSM_SPECS in config.py spezifizieren (danach ist ein erneutes importieren der Klasse in python nötig!). Mehr dazu weiter unten.
 		
 		Die Methode preview_im zeigt bei Eingabe einer gültigen URL für ein Bild die fünf Klassen mir der höchsten Konfidenz, für die ein Angriff also wahrscheinlich am erfolgreichsten ist, sowie die 
@@ -75,12 +75,12 @@ fgsm:
 		Die Methode simple_attack übernimmt die Auswahl des Labels selbst und speichert, gegeben ein Basisbild (als Url) und eine Ziel-Url, das täuschende Bild in der Ziel-Url.
 		
 		Unter Umständen kann die Qualität der Whitebox durch zu viel Training auf nicht repräsentativen Regionen während des Generationsprozesses abnehmen. Um keine neue Instanz erstellen zu müssen,
-		wenn das Modell auf den von uns trainierten Stand zurückgesetzt werden soll, gibt es eine reload_model Methode, die das Modell neu läd. Dieser kann auch ein neues Modell als argument gegeben werden, um
+		wenn das Modell auf den von uns trainierten Stand zurückgesetzt werden soll, gibt es eine reload_model Methode, die das Modell neu lädt. Dieser kann auch ein neues Modell als argument gegeben werden, um
 		das verwendete Modell schnell zu wechseln.  
 
 	Die Parameter für die FGSM-Attacke befinden sich wie bereits erwähnt im python-dictionary FGSM_SPECS, welches in config.py gespeichert ist. Im folgenden die Default-Einstellungen und eine Erklärung der Parameter:
 	"mode": "l_inf" Gibt die Form der Projektion nach jeder Iteration an. "l_inf": Maximumsnorm "l_2": Euklidnorm "simple": keine Projektion. 
-   	"bound": 10  Gibt den Maximalwert der gewählten Norm an, auf den der Abstand dann zurückprojiziert wird. Für "l_2" empfiehlt sich ein wert um 1000. 
+   	"bound": 10  Gibt den Maximalwert der gewählten Norm an, auf den der Abstand dann zurück projiziert wird. Für "l_2" empfiehlt sich ein wert um 1000. 
    	"magnitude": 1 Gibt das alpha/die Schrittgröße für die FGSM-Iteration an.
    	"max_fgsm_iterations": 25 Gibt die Maximale Schrittanzahl in der FGSM-Iteration an. 
     	"target_threshold": 0.99 Schwellenwert für die Konfidenz. Wenn dieser während der FGSM-Iteration überschritten wird, unterbricht diese und prüft den Abstand zwischen Black- und Whitebox und trainiert dann entweder 
