@@ -1,5 +1,5 @@
 from config import *
-from utilities import url_to_array, url_to_torch, torch_to_array, query_to_labels, reverse_classnamedict, ServerError
+from utilities import url_to_array, url_to_torch, torch_to_array, query_to_labels, ServerError
 from sticker import stick, stick_trans
 from fgsm import FGSM
 
@@ -171,11 +171,11 @@ class AdversarialStudio:
 
     def _refresh_labels(self):
         conf = self._get_orig_conf()
-        text = reverse_classnamedict[int(self.Label_param.get())] + ": " + str("%.2f" % conf)
+        text = REVERSE_CLASSNAMEDICT[int(self.Label_param.get())] + ": " + str("%.2f" % conf)
         text = textwrap.fill(text, 45)
         self.Original_text.configure(text=text)
         conf = self._get_edit_conf()
-        text = reverse_classnamedict[int(self.Label_param.get())] + ": " + str("%.2f" % conf)
+        text = REVERSE_CLASSNAMEDICT[int(self.Label_param.get())] + ": " + str("%.2f" % conf)
         text = textwrap.fill(text, 45)
         self.Edited_text.configure(text=text)
 

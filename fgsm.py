@@ -22,12 +22,6 @@ def project_l_2(x, base, bound):
     return base + perturbation
 
 
-def preview_im(im_url):
-    print("Labels with highest confidence:")
-    print(query_names(im_url))
-    print("try attacking one of those labels!")
-
-
 # noinspection PyCallingNonCallable
 class FGSM:
     def __init__(self, model=None, cuda=True):
@@ -197,7 +191,7 @@ class FGSM:
                           " increase loop length or start with another image!")
                 if self.always_save is False:
                     try:
-                        remove("save_url")
+                        remove(save_url)
                     except FileNotFoundError:
                         pass
         # noinspection PyUnboundLocalVariable
@@ -214,3 +208,9 @@ class FGSM:
             self.model = create_distilled(self.device)
         else:
             self.model = model
+
+    @staticmethod
+    def preview_im(im_url):
+        print("Labels with highest confidence:")
+        print(query_names(im_url))
+        print("try attacking one of those labels!")
