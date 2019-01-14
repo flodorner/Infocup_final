@@ -1,7 +1,9 @@
 from config import *
 import torch
-from torch import nn
+from torch import nn, optim
 import torch.nn.functional as f
+from torch.utils.data import TensorDataset
+import numpy as np
 
 
 def create_whitebox(device):
@@ -75,3 +77,56 @@ class BasicBlock(nn.Module):
         out += self.shortcut(x)
         out = torch.relu(out)
         return out
+
+
+def train(model, device, loader, loss_function=nn.MSELoss(),
+          optimizer=None):
+    if optimizer is None:
+        optimizer = optim.Adam(model.parameters(), lr=0.0005, weight_decay=0)
+    total_loss = 0
+    model.train()
+    for batch_idx, (data, target) in enumerate(loader):
+        data, target = data.to(device), target.to(device)
+        optimizer.zero_grad()
+        out = model(data)
+        loss = loss_function(out, target)
+        total_loss += loss.item()
+        loss.backward()
+        optimizer.step()
+        accuracy = torch.mean(torch.eq(torch.argmax(out, dim=1), torch.argmax(target, dim=1)).double()).item()
+        print("trainig loss: %s accuracy: %s" % (total_loss / (batch_idx + 1), accuracy))
+
+    return None
+
+
+def evaluate(model, device, loader, loss_function=nn.MSELoss(), name="validation"):
+    model.eval()
+    (data, target) = iter(loader).next()
+    data, target = data.to(device), target.to(device)
+    out = model(data)
+    loss = loss_function(out, target).item()
+    accuracy = torch.mean(torch.eq(torch.argmax(out, dim=1), torch.argmax(target, dim=1)).double()).item()
+    print("%s loss: %s accuracy: %s" % (name, loss, accuracy))
+
+    return None
+
+
+def simple_train_loop(model, device, train_loader, val_loader, save_directory):
+    num_epochs = 50
+    for epoch in range(1, num_epochs + 1):
+        print('Now in epoch %d' % epoch)
+        train(model, device, train_loader)
+        evaluate(model, device, val_loader, name="validation")
+        if epoch % int(num_epochs / 10) == 0:
+            torch.save(model.state_dict(), save_directory)
+
+    return None
+
+
+def create_loader(images, labels):
+    images = images.reshape(images.shape[0], images.shape[3], images.shape[1], images.shape[2])
+    labels = labels.astype(np.float32)
+    images = torch.from_numpy(images)
+    labels = torch.from_numpy(labels)
+    dataset = TensorDataset(images, labels)
+    return dataset
