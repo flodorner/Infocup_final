@@ -67,7 +67,7 @@ sticker:
 fgsm:
 	Die Klasse FGSM kann mit einem Pytorch model als Whitebox, sowie einem Parameter cuda, der bestimmt ob cuda, falls vorhanden zur Beschleunigung genutzt werden soll, initialisiert werden.
 	Ohne Angabe eines models wird die von uns trainierte Whitebox verwendet. 
-		Die Methode attack_on_label erhält die Url für ein Basisbild, eine Url zum speichern, sowie ein label, zu dessen Erkennung das angegriffene Netz gebracht werden soll. 
+		Die Methode attack_on_label erhält die Url für ein Basisbild, eine Url zum speichern, sowie ein label ("target_label"), zu dessen Erkennung das angegriffene Netz gebracht werden soll. 
 		Danach wird eine Iterierte fast gradient sign Attacke inklusive Anpassung der Whitebox ausgehend von dem Basisbild durchgeführt und das Ergebnis gespeichert. Die genauen Parameter der Attacke
 		lassen sich durch ändern von FGSM_SPECS in config.py spezifizieren (danach ist ein erneutes importieren der Klasse in python nötig!). Mehr dazu weiter unten.
 		
