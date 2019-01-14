@@ -31,13 +31,23 @@ def stick(image, sticker):
    
     return result
 
+def unstick(sticked, base):
+    result = np.zeros(sticked.shape, dtype=np.uint8)
+    mask = sticked == 255
+    mask2 = base != 255
+    mask = mask*mask2
+    result[mask] = sticked[mask]
+
+    return result
+
+
+
 def load_random_sticker(label):
     imlist = glob(STICKER_DIRECTORY + "/" + str(label) + "/*")
-    print(imlist)
     if len(imlist) == 0:
         raise Exception("no stickers with this label available")
     try:
-        imlist.remove(STICKER_DIRECTORY + "/" + str(label) + "/desktop.ini")
+        imlist.remove(STICKER_DIRECTORY + "/" + str(label) + "\\desktop.ini")
     except ValueError:
         pass
     try:
@@ -55,7 +65,12 @@ class StickerGenerator:
         self.imagesize = IMAGE_SIZE
         self.pixelsize = pixelsize
         self.fringe = fringe
-        self.start = start
+        if type(start) == np.ndarray:
+            self.start = start
+        elif type(start) == str:
+            self.start = url_to_array(start)
+        else:
+            print("start is supposed to be a numpy array or an url for an image!")
 
         basic_im = np.copy(self.start)
         self.basic_prob = np.array(save_and_query(basic_im, "temp.png"))
@@ -102,7 +117,7 @@ class StickerGenerator:
                     if self.probarray[i, j, k, label] > pixel_threshold:
                         basic_im[self.fringe + i * self.pixelsize:self.fringe + (i + 1) * self.pixelsize,
                                  self.fringe + j * self.pixelsize:self.fringe + (j + 1) * self.pixelsize, k] = 255
-        if np.max(basic_im) > 0:                
+        if np.max(basic_im-self.start) > 0:
             prob = np.array(save_and_query(basic_im, "temp.png"))
             self.queries += 1 
             sleep(1)
@@ -110,6 +125,7 @@ class StickerGenerator:
         else: 
             prob = np.zeros(LABEL_AMOUNT)
         if prob[label] > save_threshold:
+            basic_im = unstick(basic_im, self.start)
             save_url = STICKER_DIRECTORY + "/" + str(label) + "/" + title +\
                        str(pixel_threshold) + str(prob[label]) + ".png"
             save(basic_im, save_url)

@@ -2,6 +2,7 @@ from config import *
 from utilities import url_to_array, url_to_torch, torch_to_array, query_to_labels, ServerError
 from sticker import stick, stick_trans
 from fgsm import FGSM
+from GAN import create_image
 
 from tkinter import filedialog
 from tkinter import *
@@ -45,11 +46,12 @@ class AdversarialStudio:
         self.Sticker_Button_full = Button(self.Top, text="Add sticker", command=lambda: self._sticker_button("full"))
         self.Sticker_Button_trans = Button(self.Top, text="Add transparent sticker",
                                            command=lambda: self._sticker_button("trans"))
+        self.Generate_button = Button(self.Top, text="Generate Face", command=self._generate_button)
 
         self.Interface = Frame(self.Root)
         self.Buttons = Frame(self.Interface)
-        self.Noisebutton = Button(self.Buttons, text="Add Noise", command=self._advers_attack)
-        self.Retrainbutton = Button(self.Buttons, text="Retrain Whitebox", command=self._retrain_whitebox)
+        self.Noise_button = Button(self.Buttons, text="Add Noise", command=self._advers_attack)
+        self.Retrain_button = Button(self.Buttons, text="Retrain Whitebox", command=self._retrain_whitebox)
 
         self.Label_text = Label(self.Interface, text="Target Label:")
         self.Label_param = Entry(self.Interface,
@@ -73,6 +75,7 @@ class AdversarialStudio:
         self.Reset_Button.grid(row=0, column=2, sticky=W)
         self.Sticker_Button_full.grid(row=0, column=3, sticky=W)
         self.Sticker_Button_trans.grid(row=0, column=4, sticky=W)
+        self.Generate_button.grid(row=0, column=5, sticky=W)
 
         self.Original_image.grid(row=1, column=0, rowspan=3, columnspan=3, sticky=W)
         self.Original_description.grid(row=4, column=0, columnspan=3, rowspan=2, sticky=W)
@@ -95,8 +98,8 @@ class AdversarialStudio:
         self.Magnitude_param.grid(row=2, column=1)
 
         self.Buttons.grid(row=4, columnspan=2)
-        self.Noisebutton.grid(row=0, column=0)
-        self.Retrainbutton.grid(row=0, column=1)
+        self.Noise_button.grid(row=0, column=0)
+        self.Retrain_button.grid(row=0, column=1)
 
         self.Root.mainloop()
 
@@ -207,7 +210,7 @@ class AdversarialStudio:
         self._add_whitebox_info()
 
     def _save_button(self):
-        filename = filedialog.asksaveasfilename(filetypes=[("png files", "*.png")])
+        filename = filedialog.asksaveasfilename(initialdir="/", filetypes=[("png files", "*.png")])
         self.edit_img_PIL.save(filename+".png")
 
     def _sticker_button(self, mode="full"):
@@ -218,6 +221,22 @@ class AdversarialStudio:
             self.edit_img_PIL = Image.fromarray(stick(start, sticker))
         elif mode == "trans":
             self.edit_img_PIL = Image.fromarray(stick_trans(start, sticker))
+        edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
+        self.Edited_image.configure(image=edit_img)
+        self.Edited_image.image = edit_img
+
+        self._resetlabel(str(self._get_max_label()))
+        self._refresh_labels()
+        self._add_whitebox_info()
+
+    def _generate_button(self):
+
+        self.orig_img_PIL = Image.fromarray(torch_to_array(create_image())).resize((IMAGE_SIZE, IMAGE_SIZE))
+        orig_img = ImageTk.PhotoImage(self.orig_img_PIL.resize((256, 256)))
+        self.Original_image.configure(image=orig_img)
+        self.Original_image.image = orig_img
+
+        self.edit_img_PIL = self.orig_img_PIL.copy()
         edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
         self.Edited_image.configure(image=edit_img)
         self.Edited_image.image = edit_img

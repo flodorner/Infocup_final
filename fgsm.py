@@ -2,10 +2,12 @@ import torch
 from torch import optim, nn
 from os import remove
 import numpy as np
+from glob import glob
+from time import sleep
 
 from config import *
 from utilities import torch_to_array, url_to_torch, save_and_query, query_to_labels, query_names
-from distill import create_distilled
+from whitebox import create_whitebox
 
 
 def project_l_inf(x, base, bound):
@@ -31,7 +33,7 @@ class FGSM:
         else:
             self.device = torch.device('cpu')
         if model is None:
-            self.model = create_distilled(self.device)
+            self.model = create_whitebox(self.device)
         else:
             self.model = model
 
@@ -184,7 +186,7 @@ class FGSM:
                 stop = True
                 if self.print:
                     print("found adversarial example")
-            if steps >= self.restart_max_amount or mse < self.restart_accuracy_bound:
+            elif steps >= self.restart_max_amount or mse < self.restart_accuracy_bound:
                 stop = True
                 if self.print:
                     print("convergence to target confidence failed. relax bounds,"
@@ -203,9 +205,37 @@ class FGSM:
             print("attacking label " + str(target_label))
         return self.attack_on_label(im_url, save_url, target_label)
 
+    def simple_batch_attack(self, im_folder, save_folder):
+        imlist = glob(im_folder + "/*")
+        if len(imlist) == 0:
+            raise Exception("im_folder is empty!")
+        try:
+            imlist.remove(im_folder + "\\desktop.ini")
+        except ValueError:
+            pass
+        for i in range(len(imlist)):
+            self.simple_attack(imlist[i], save_folder + "/" + imlist[i].replace("\\", "/").split("/")[-1])
+            sleep(self.restart_max_amount + 2)
+        return None
+
+
+    def batch_attack_on_label(self, im_folder,save_folder, target_label):
+        imlist = glob(im_folder + "/*")
+        if len(imlist) == 0:
+            raise Exception("im_folder is empty!")
+        try:
+            imlist.remove(im_folder + "\\desktop.ini")
+        except ValueError:
+            pass
+        for i in range(len(imlist)):
+            self.attack_on_label(imlist[i], save_folder + "/" + imlist[i].replace("\\", "/").split("/")[-1],
+                                 target_label)
+            sleep(self.restart_max_amount + 2)
+        return None
+
     def reload_model(self, model):
         if model is None:
-            self.model = create_distilled(self.device)
+            self.model = create_whitebox(self.device)
         else:
             self.model = model
 

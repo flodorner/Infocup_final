@@ -3,6 +3,7 @@ KEY = 'ut6ohb7ZahV9tahjeikoo1eeFaev1aef'
 STICKER_DIRECTORY = "Quickstick"
 LABEL_AMOUNT = 43
 IMAGE_SIZE = 64
+WHITEBOX_DIRECTORY = "Models/ResNet.pt"
 
 FGSM_SPECS = {
     "mode": "l_inf",
