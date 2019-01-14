@@ -214,8 +214,11 @@ class FGSM:
         except ValueError:
             pass
         for i in range(len(imlist)):
-            self.simple_attack(imlist[i], save_folder + "/" + imlist[i].replace("\\", "/").split("/")[-1])
-            sleep(self.restart_max_amount + 2)
+            if imlist[i].split(".")[-1] != "png":
+                continue
+            else:
+                self.simple_attack(imlist[i], save_folder + "/" + imlist[i].replace("\\", "/").split("/")[-1])
+                sleep(self.restart_max_amount + 2)
         return None
 
 
@@ -228,9 +231,12 @@ class FGSM:
         except ValueError:
             pass
         for i in range(len(imlist)):
-            self.attack_on_label(imlist[i], save_folder + "/" + imlist[i].replace("\\", "/").split("/")[-1],
-                                 target_label)
-            sleep(self.restart_max_amount + 2)
+            if imlist[i].split(".")[-1] != "png":
+                continue
+            else:
+                self.attack_on_label(imlist[i], save_folder + "/" + imlist[i].replace("\\", "/").split("/")[-1],
+                                     target_label)
+                sleep(self.restart_max_amount + 2)
         return None
 
     def reload_model(self, model):
