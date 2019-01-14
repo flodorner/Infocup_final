@@ -31,71 +31,60 @@ def stick(image, sticker):
    
     return result
 
+def unstick(sticked, base):
+    result = np.zeros(sticked.shape, dtype=np.uint8)
+    mask = sticked == 255
+    mask2 = base != 255
+    mask = mask*mask2
+    result[mask] = sticked[mask]
+
+    return result
+
+
 
 def load_random_sticker(label):
     imlist = glob(STICKER_DIRECTORY + "/" + str(label) + "/*")
-
     if len(imlist) == 0:
         raise Exception("no stickers with this label available")
     try:
-        imlist.remove(STICKER_DIRECTORY + "/" + str(label) + "/desktop.ini")
-    except FileNotFoundError:
+        imlist.remove(STICKER_DIRECTORY + "/" + str(label) + "\\desktop.ini")
+    except ValueError:
         pass
-    sticker_url = "/" + str(label) + "/" + imlist[randint(0, len(imlist)-1)].split("/")[-1]
-    
+    try:
+        imlist.remove(STICKER_DIRECTORY + "/" + str(label) + "/Placeholder.txt")
+    except ValueError:
+        pass
+    sticker_url = imlist[randint(0, len(imlist)-1)]
     return sticker_url
-
-
-def sticker_attack(image_url, save_url, sticker_url=None, mode="full", label=None): 
-    if sticker_url is None:
-        if label is None:
-            label = 5
-        sticker_url = load_random_sticker(label)
-        
-    elif label is None:
-        label = int(sticker_url.split("/")[0])
-        
-    sticker_url = STICKER_DIRECTORY + "/" + sticker_url
-    sticker = url_to_array(sticker_url)
-    image = url_to_array(image_url)
-    
-    if mode == "full":
-        output = stick(image, sticker)
-    elif mode == "transparent":
-        output = stick_trans(image, sticker)
-    else:
-        raise Exception("mode is supposed to be full or transparent")
-    
-    conf = save_and_query(output, save_url)[label]
-    
-    return conf
 
 
 class StickerGenerator:
 
-    def __init__(self,  directory=STICKER_DIRECTORY, pixelsize=3, fringe=17, stride=3,
-                 start=np.zeros((IMAGE_SIZE, IMAGE_SIZE, CHANNELS), dtype=np.uint8)):
-        
-        self.directory = directory
+    def __init__(self, pixelsize=3, fringe=17, start=np.zeros((IMAGE_SIZE, IMAGE_SIZE, 3), dtype=np.uint8)):
+
         self.imagesize = IMAGE_SIZE
         self.pixelsize = pixelsize
         self.fringe = fringe
-        self.stride = stride
-        self.start = start
+        if type(start) == np.ndarray:
+            self.start = start
+        elif type(start) == str:
+            self.start = url_to_array(start)
+        else:
+            print("start is supposed to be a numpy array or an url for an image!")
 
         basic_im = np.copy(self.start)
         self.basic_prob = np.array(save_and_query(basic_im, "temp.png"))
 
         self.queries = 1
-        self.num_rows = (self.imagesize - 2 * self.fringe) / self.stride - (self.pixelsize / self.stride - 1)
+        self.num_rows = (self.imagesize - 2 * self.fringe) / self.pixelsize
         
         if self.num_rows.is_integer():
             self.num_rows = int(self.num_rows)
             self.probarray = np.zeros((self.num_rows, self.num_rows, 3, LABEL_AMOUNT))
-            self._generate_pixels()
-            
+
         else:
-            print("Error: Image size - 2 * fringe and pixelsize should be dividable by stride")
+            print("Error: Image size - 2 * fringe should be dividable by pixelsize. Generation of stickers"
+                  "won't be possible without reinitalization!")
             
         try:
             remove("temp.png")
@@ -105,10 +94,10 @@ class StickerGenerator:
     def _generate_pixels(self):
         for i in range(self.num_rows):
             for j in range(self.num_rows):
-                for k in range(CHANNELS):
+                for k in range(3):
                     basic_im = np.copy(self.start)
-                    basic_im[self.fringe + i * self.stride:self.fringe + i * self.stride + self.pixelsize,
-                             self.fringe + j * self.stride:self.fringe + j * self.stride + self.pixelsize, k] = 255
+                    basic_im[self.fringe + i * self.pixelsize:self.fringe + (i + 1) * self.pixelsize,
+                             self.fringe + j * self.pixelsize:self.fringe + (j + 1) * self.pixelsize, k] = 255
                     prob = np.array(save_and_query(basic_im, "temp.png"))
                     self.probarray[i, j, k] = prob - self.basic_prob
                     self.queries += 1
@@ -119,16 +108,16 @@ class StickerGenerator:
             pass
         return None
 
-    def make_sticker(self, label, title="", pixel_threshold=0.01, save_threshold=0.9):
+    def _make_sticker(self, label, title="", pixel_threshold=0.01, save_threshold=0.9):
 
         basic_im = np.copy(self.start)
         for i in range(self.num_rows):
             for j in range(self.num_rows):
-                for k in range(CHANNELS):
+                for k in range(3):
                     if self.probarray[i, j, k, label] > pixel_threshold:
-                        basic_im[self.fringe + i * self.stride:self.fringe + i * self.stride + self.pixelsize,
-                                 self.fringe + j * self.stride:self.fringe + j * self.stride + self.pixelsize, k] = 255               
-        if np.max(basic_im) > 0:                
+                        basic_im[self.fringe + i * self.pixelsize:self.fringe + (i + 1) * self.pixelsize,
+                                 self.fringe + j * self.pixelsize:self.fringe + (j + 1) * self.pixelsize, k] = 255
+        if np.max(basic_im-self.start) > 0:
             prob = np.array(save_and_query(basic_im, "temp.png"))
             self.queries += 1 
             sleep(1)
@@ -136,14 +125,44 @@ class StickerGenerator:
         else: 
             prob = np.zeros(LABEL_AMOUNT)
         if prob[label] > save_threshold:
+            basic_im = unstick(basic_im, self.start)
             save_url = STICKER_DIRECTORY + "/" + str(label) + "/" + title +\
                        str(pixel_threshold) + str(prob[label]) + ".png"
             save(basic_im, save_url)
             print("Sticker saved under " + save_url)
-            
         try:
             remove("temp.png")
         except FileNotFoundError:
             pass
         
         return basic_im
+
+    def sticker_batch(self, title="", pixel_threshold=0.01, save_threshold=0.9):
+        self._generate_pixels()
+        for i in range(LABEL_AMOUNT):
+            self._make_sticker(i, title=title, pixel_threshold=pixel_threshold, save_threshold=save_threshold)
+        return None
+
+    @staticmethod
+    def sticker_attack(image_url, save_url, sticker_url=None, label=None, mode="full"):
+        if sticker_url is None:
+            if label is None:
+                label = 5
+            sticker_url = load_random_sticker(label)
+
+        elif label is None:
+            label = int(sticker_url.split("/")[-2])
+
+        sticker = url_to_array(sticker_url)
+        image = url_to_array(image_url)
+
+        if mode == "full":
+            output = stick(image, sticker)
+        elif mode == "transparent":
+            output = stick_trans(image, sticker)
+        else:
+            raise Exception("mode is supposed to be full or transparent")
+
+        conf = save_and_query(output, save_url)[label]
+
+        return conf
