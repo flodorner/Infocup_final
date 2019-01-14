@@ -54,7 +54,7 @@ sticker:
 	Die Klasse StickerGenerator kann mit den Werten pixelsize und fringe initialisiert werden (standardeinstellungen: 3, 17), die die Größe der Pixelblöcke, und deren Abstand zum Rand auf beiden Seiten bestimmen. 
 	Dabei sollte die Bildgröße Minus 2 Mal fringe durch Pixelsize teilbar sein.
 		Mit der (Instanz)Methode sticker_batch können nun Sticker generiert werden, die in dem Subverzeichnis für die entsprechende Klasse gespeichert werden. Mit dem optionalen Argument 	
-		title (ohne Angabe "") kann ein Titel für den Stickerbatch bestimmt werden. Für die einzlnen Sticker werden der Pixel_threshold und die Konfidenz an den Namen anghängt. 
+		title (ohne Angabe: "") kann ein Titel für den Stickerbatch bestimmt werden. Für die einzlnen Sticker werden der Pixel_threshold und die Konfidenz an den Namen anghängt. 
 		Pixel_threshold (ohne Angabe 0.01)  gibt vor, wie viel Konfidenzgewinn ein Pixel bringen muss um in den Sticker aufgenommen zu werden.
 		Es werden diejenigen Sticker gespeichert, die auf schwarzem Hintergrund eine Konfidenz von mehr als save_threshold (ohne Angabe 0.9) für die zugehörige Klasse generieren. Je
 		nach gewählten Parametern kann diese Methode einige Zeit in Anspruch nehmen, da für jeden Pixelblock aufgrund der Maximalanzahl von Anfragen an die Blackbox mindestens eine 
