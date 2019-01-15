@@ -131,8 +131,8 @@ Weitere Config-Parameter:
 	LABEL_AMOUNT = 43 Anzahl der Klassen
 	IMAGE_SIZE = 64 Größe der Bilder in Pixeln
 	WHITEBOX_DIRECTORY = "Models/ResNet.pt" Speicherort des Modells für die White Box. 
-	Bei abweichender Architektur muss diese zusätzlich in whitebox.py angepasst werden. Dort stehen zudem Methoden für das Training 
-	von Modellen bereit.
+	Bei abweichender Architektur muss diese zusätzlich in whitebox.py angepasst werden.
+	Dort stehen zudem Methoden für das Training von Modellen bereit.
 
 Liste der Klassen und der zugordneten numerischen Label: (CLASSNAMEDICT)
 
