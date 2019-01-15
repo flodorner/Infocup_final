@@ -19,16 +19,16 @@ class PretrainedGenerator:
 
     def perturb_image(self, image):
         model = G(3).to(DEVICE)
-        model.load_state_dict(torch.load(GAN_DIRECTORY, map_location="cpu"))
-        model.eval()
         with torch.no_grad():
             image = self.preprocess(image).to(DEVICE).unsqueeze(0)
-            X, _ = model(image)
+            X, _ = self.model(image)
             X = X.permute(0, 2, 3, 1)
             X = X.contiguous().view(1, 3, 64, 64)
             X = X * 255
             X = X.detach().cpu().numpy().reshape(64, 64, 3)
         return X
+
+    #def perturb_images(self, ):
 
     @staticmethod
     def create_generator():
