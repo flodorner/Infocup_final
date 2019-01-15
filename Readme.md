@@ -26,28 +26,21 @@ In dem heruntergeladenen Ordner: python main.py
 
 Load Image: Erlaubt, ein Bild einzuladen. Für die Nutzung des Generative Adversarial Networks (GAN) sollte ein Bild aus dem Ordner "Faces" geladen werden.
 
-Retrain Whitebox: Anpassung der Whitebox anhand der Vorhersagen der Black Box.
+Add Noise: Fügt dem rechten Bild täuschendes FGSM-Rauschen hinzu. Die Stärke und der maximale Abstand zum linken Bild lassen sich durch Eingabe anderer Werte für Magnitude und Bound ändern. Label bestimmt die Zielklasse. 
 
-	Durch den Add Noise Knopf kann Rauschen zu dem Bild auf der rechten Seite hinzugefügt werden,
-	das die Konfidenz der Black und der Whitebox in die gewählte Klasse  im Normalfall erhöhen sollte.
-	Darüber können die Klasse (Label), die Stärke des zugefügten Rauschens (Noise Magnitude), 
-	sowie der maximale Abstand zwischen dem originalen und veränderten Bild pro Pixel und Kanal (Noise Bound) 
-	festgelegt werden.
+Retrain White Box: Anpassung der White Box anhand der Vorhersagen der Black Box.
 
-	Das resultierende Bild kann über den Save image Dialog links oben gespeichert werden.
-	Durch den Reset image Knopf wir das veränderte Bild wieder auf das original zurückgesetzt.
+Reset current Image: Setzt das rechte Bild zurück.
 
-	Durch den Add sticker und Add transparent Sticker Knopf können mit der sticker.py Klasse generierte Sticker 
-	auf das Bild geklebt werden, entweder intransparent, oder aber Kanalweise ("transparent"). 
-	Dabei ist zu beachten, dass die "transparenten" Sticker auf weißen Hintergrund nicht sichtbar sind 
-	(Das liegt daran, dass der Angriff für maximale Effektivität nur niedrige Farbkanalwerte durch Hohe ersetzt
-	und nicht umgekehrt).
-	Will man den Effekt eines transparenten Stickers auf weißem Hintergrund dennoch erreichen,
-	lässt sich dies durch Anwenden des nicht transparenten Sticker, einstellen von noise magnitude = 0 sowie einem
-	hohen noise bound und drücken des add noise Knopes erreichen. Die durch den Sticker erhöhten Farbkanäle werden
-	dann reduziert, um nah genug am Original zu sein, was dem gewünschten Effekt gleichkommt.
+Add Generative Noise: Fügt dem rechten Bild durch das GAN generiertes Rauschen hinzu.
 
-Anstatt die GUI zu benutzen kann auch direkt in Python gearbeitet werden. Hier stehen auch weitere Operationrn wie der iterierte FGSM-Angriff und die Generation mehrer Täuschender Bilder auf einmal zu Verfügung. Zur Nutzung wird in dem heruntergeladenen Ordner über den Kommandozeilenbefehl Python eine Pythonkonsole geöffnet. Anschließend erstellt man mit Instanz = Klassenname(args) eine Instanz der entsprechenden Klasse und führt die gewünschte Methode mit Instanz.Methodenname(args) durch. "args" ist hier ein Platzhalter für die jeweiligen Argumente.
+Add (transparent) Sticker: klebt den ausgewählten Sticker auf das rechte Bild.
+
+Save Image: Erlaubt, das rechte Bild abzuspeichern.
+
+##### Erweitert
+
+Anstatt die GUI zu benutzen kann auch direkt in Python gearbeitet werden. Hier stehen auch weitere Operationrn wie der iterierte FGSM-Angriff und die Generation mehrer Täuschender Bilder auf einmal zu Verfügung. Zur Nutzung wird in dem heruntergeladenen Ordner über den Kommandozeilenbefehl Python eine Pythonkonsole geöffnet. Nun muss die entsprechende Klasse importiert werden (from sticker import StickerGenerator bzw. from fgsm inmport FGSM). Anschließend erstellt man mit Instanz = Klassenname(args) eine Instanz der entsprechenden Klasse und führt die gewünschte Methode mit Instanz.Methodenname(args) durch. "args" ist hier ein Platzhalter für die jeweiligen Argumente.
 
 sticker:
 	Die Klasse StickerGenerator kann mit den Werten pixelsize und fringe initialisiert werden (standardeinstellungen: 3, 17), die die Größe der Pixelblöcke, und deren Abstand zum Rand auf beiden Seiten bestimmen. 
