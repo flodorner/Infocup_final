@@ -10,7 +10,8 @@ if GAN_SPECS['use_faces_dataset']:
     from data import Faces
 
 DEVICE = 'cpu'
-
+import matplotlib.pyplot as plt
+import numpy as np
 class PretrainedGenerator:
 
     def __init__(self):
@@ -23,10 +24,9 @@ class PretrainedGenerator:
         with torch.no_grad():
             image = self.preprocess(image).to(DEVICE)
             X, _ = self.model(image.unsqueeze(0))
-            X = image.cpu().detach()
-            print(_.shape)
-            print((image - X).shape)
-            X = self.postprocess(X.squeeze(0))
+            X = X.squeeze(0).cpu().detach().numpy()
+            X = np.transpose(X, (1, 2, 0))
+            X = X * 255
         return X
 
     @staticmethod
