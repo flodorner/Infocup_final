@@ -19,7 +19,7 @@ Alternativ kann natürlich auch eine vorhandene Installation von Python 3.7 mit 
 Im Terminal und dem heruntergeladenen Ordner:
 
 ```
-export PATH="$HOME/anaconda/bin:$PATH"
+export PATH=~/anaconda3/bin:$PATH
 python main.py
 ```
 
