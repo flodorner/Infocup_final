@@ -1,17 +1,33 @@
-Die Software basiert auf Python-skripten und besteht aus einer GUI zur einfachen Erstellung 
+### InformatiCup Abgabe Florian Dorner und Julian Stastny
+
+Die Software basiert auf Python und besteht aus einer GUI zur einfachen Erstellung 
 von Bildern zur Täuschung des gegebenen neuronalen Netzes sowie einigen Funktionen zur automatischen 
 Erstellung von täuschenden Stickern und zur automatischen Erstellung täuschender Bilder aus 
 einem gegebenen Bild. 
 
-Für die Software werden neben bereits in Python vorinstallierten Bibliotheken die Bibliotheken
-numpy, requests, torch, pillow und Tk benötigt.
+#### Installation (Ubuntu 18.04 LTS AMD64)
+
 Am einfachsten ist die Installation auf der Referenzplattform durchzuführen, indem in folgender Reihenfolge
 die Installationsanweisungen auf den jeweiligen Projektseiten befolgt werden:
-1. Installieren von Python 3.7.1, numpy, requests, tk und pillow in der Anaconda Distribution für Linux: https://www.anaconda.com/download/#download und folgen der Installationsanweisungen
-(Herunterladen und ausführen des Shell-Skriptes und setzen des Pfades (export PATH=~/anaconda3/bin:$PATH).
-2. Installieren von Pytorch 1.0 via conda durch befolgen der Anweisungen auf https://pytorch.org/ (oder ohne Cuda in der Kommandozeile: conda install pytorch-cpu torchvision-cpu -c pytorch) 
-Sollte Cuda auf dem System vorhanden sein empfiehlt sich eine Installation mit der entsprechenden Cuda-Version.
-3. Die Gui kann nun über die Kommandozeile via python gui.py aufgerufen werden (im entsprechenden Ordner)
+1. Installation von [Anaconda für Python 3.7](https://www.anaconda.com/download/#linux)  
+2. Installation von Pytorch 1.0 mit Cuda in Anaconda
+3. Falls nicht vorhanden: Installation von numpy, pandas, requests, tk und pillow in Anaconda
+
+Die Installation sollte auch unter Windows analog funktionieren.
+
+#### Ausführung
+
+```
+export PATH="$HOME/anaconda/bin:$PATH"
+python main.py
+```
+
+##### Tutorial
+
+Load Image: Erlaubt, ein Bild einzuladen. Für die Nutzung des Generative Adversarial Networks (GAN) sollte ein Bild aus dem Ordner "Faces" geladen werden.
+
+Retrain Whitebox: Anpassung der Whitebox anhand der Vorhersagen der Blackbox.
+
 4. Die Generation von Stickern und die strukturierte Generation von täuschendem Rauschen passieren über Instanzmethoden der Klassen StickerGenerator in sticker.py bzw. FGSM in fgsm.py.
 Um eine der Methoden auszuführen wird im entsprechenden Ordner eine python Konsole geöffnet, die jeweilige Klasse importiert (from sticker import StickerGenerator / from fgsm import FGSM) und eine Instanz erstellt
 (Instanz = StickerGenerator() bzw FGSM()). Durch Instanz.methode() (z.B. Instanz.make_sticker()) lassen sich nun die entsprechenden Methoden benutzen. 
