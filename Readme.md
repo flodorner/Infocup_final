@@ -3,7 +3,7 @@
 Die Software basiert auf Python und besteht aus einer GUI zur einfachen Erstellung 
 von Bildern zur Täuschung des gegebenen neuronalen Netzes sowie einigen Funktionen zur automatischen 
 Erstellung von täuschenden Stickern und zur automatischen Erstellung täuschender Bilder aus 
-einem gegebenen Bild. Sämtliche Bildmethoden wurden Primär mit 64x64 "RGB"-png dateien getestet, "RGBA" sollte aber eigentlich keine Probleme darstellen. Das Verwenden andere Formate kann potentiell zu Fehlern führen. 
+einem gegebenen Bild. Sämtliche Bildmethoden wurden primär mit 64x64 RGB-pngs getestet, RGBA sollte aber eigentlich keine Probleme darstellen. Das Verwenden andere Formate kann potentiell zu Fehlern führen. 
 
 #### Installation (Ubuntu 18.04 LTS AMD64)
 
