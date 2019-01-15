@@ -24,7 +24,7 @@ In dem heruntergeladenen Ordner: python main.py
 
 #### Tutorial
 
-Load Image: Erlaubt, ein Bild einzuladen. Für die Nutzung des Generative Adversarial Networks (GAN) sollte ein Bild aus dem Ordner "Faces" geladen werden.
+Load Image: Erlaubt, ein Bild einzuladen. Für die Nutzung des Generative Adversarial Networks (GAN) sollte ein Bild aus dem Ordner "Faces" geladen werden. Sobald ein Bild geladen wurde werden unter beiden Bildern die jeweilige Konfidenz der Black Box angezeigt. Nun kann das rechte Bild manipuliert werden.
 
 Add Noise: Fügt dem rechten Bild täuschendes FGSM-Rauschen hinzu. Die Stärke und der maximale Abstand zum linken Bild lassen sich durch Eingabe anderer Werte für Magnitude und Bound ändern. Label bestimmt die Zielklasse. 
 
