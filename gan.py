@@ -22,13 +22,16 @@ class PretrainedGenerator:
 
     def __init__(self):
         self.model = self.create_generator()
+        self.model.eval()
         self.preprocess = transforms.ToTensor()
         self.postprocess = transforms.ToPILImage()
 
     def perturb_image(self, image):
-        image = self.preprocess(image).to(DEVICE)
-        X, _ = self.model(image.unsqueeze(0))
-        X = self.postprocess(X.squeeze(0))
+        with torch.no_grad():
+            image = self.preprocess(image).to(DEVICE)
+            X, _ = self.model(image.unsqueeze(0))
+            X = image.cpu().detach()
+            X = self.postprocess(X.squeeze(0))
         return X
 
     @staticmethod

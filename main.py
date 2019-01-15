@@ -2,7 +2,7 @@ from config import *
 from utilities import url_to_array, url_to_torch, torch_to_array, query_to_labels, ServerError
 from sticker import stick, stick_trans
 from fgsm import FGSM
-from GAN import create_image
+from gan import PretrainedGenerator
 
 from tkinter import filedialog
 from tkinter import *
@@ -10,6 +10,7 @@ from PIL import ImageTk, Image
 from os import path
 import numpy as np
 import textwrap
+from matplotlib import pyplot as plt
 
 
 class AdversarialStudio:
@@ -23,6 +24,7 @@ class AdversarialStudio:
 
         self.Generator = FGSM()
         self.Generator.print = False
+        self.GAN = PretrainedGenerator()
 
         self.Original_description = Label(self.Root, text="Original Image:")
         self.Original_text = Label(self.Root, text="")
@@ -231,8 +233,10 @@ class AdversarialStudio:
 
     def _generate_button(self):
         start = np.asarray(self.edit_img_PIL.convert("RGB"))
-        self.edit_img_PIL = Image.fromarray(torch_to_array(create_image(start))).resize((IMAGE_SIZE, IMAGE_SIZE))
+        self.edit_img_PIL = self.GAN.perturb_image(start).resize((IMAGE_SIZE, IMAGE_SIZE))
         edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
+        plt.imshow(self.edit_img_PIL)
+        plt.show()
         self.Edited_image.configure(image=edit_img)
         self.Edited_image.image = edit_img
 
