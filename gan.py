@@ -9,14 +9,7 @@ from whitebox import create_whitebox
 if GAN_SPECS['use_faces_dataset']:
     from data import Faces
 
-if GAN_SPECS['cuda']:
-    if torch.cuda.is_available():
-        DEVICE = torch.device('cuda')
-    else:
-        DEVICE = torch.device('cpu')
-        print('Warning: Specified use of CUDA, but CUDA is not available. Proceeding on CPU')
-
-
+DEVICE = 'cpu'
 
 class PretrainedGenerator:
 
@@ -39,10 +32,7 @@ class PretrainedGenerator:
     @staticmethod
     def create_generator():
         model = G(3).to(DEVICE)
-        if not torch.cuda.is_available():
-            model.load_state_dict(torch.load(GAN_DIRECTORY, map_location="cpu"))
-            return model
-        model.load_state_dict(torch.load(GAN_DIRECTORY))
+        model.load_state_dict(torch.load(GAN_DIRECTORY, map_location="cpu"))
         return model
 
 class BasicBlock(nn.Module):
