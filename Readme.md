@@ -10,7 +10,7 @@ einem gegebenen Bild. Sämtliche Bildmethoden wurden primär mit 64x64 RGB-pngs 
 Am einfachsten ist die Installation auf der Referenzplattform durchzuführen, indem in folgender Reihenfolge
 die Installationsanweisungen auf den jeweiligen Projektseiten befolgt werden:
 1. Installation von [Anaconda für Python 3.7](https://www.anaconda.com/download/#linux)  
-2. Installation von Pytorch 1.0 mit Cuda in Anaconda
+2. Installation von Pytorch 1.0 (mit Cuda, falls auf dem System vorhanden) in Anaconda (siehe https://pytorch.org/)
 3. Falls nicht vorhanden: Installation von numpy, pandas, requests, tk und pillow in Anaconda
 
 Alternativ kann natürlich auch eine vorhandene Installation von Python 3.7 mit den entsprechenden Bibliotheken verwendet werden. Die Installation sollte auch unter Windows analog funktionieren.
