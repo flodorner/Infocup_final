@@ -16,10 +16,11 @@ die Installationsanweisungen auf den jeweiligen Projektseiten befolgt werden:
 Alternativ kann natürlich auch eine vorhandene Installation von Python 3.7 mit den entsprechenden Bibliotheken verwendet werden. Die Installation sollte auch unter Windows analog funktionieren.
 
 ### Ausführung
+Im Terminal und dem heruntergeladenen Ordner:
 
 ```
 export PATH="$HOME/anaconda/bin:$PATH"
-In dem heruntergeladenen Ordner: python main.py
+python main.py
 ```
 
 #### Tutorial
