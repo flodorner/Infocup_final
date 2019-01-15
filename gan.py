@@ -26,9 +26,9 @@ class PretrainedGenerator:
         self.postprocess = transforms.ToPILImage()
 
     def perturb_image(self, image):
-        image = self.preprocess(image.unsqueeze(0)).to(DEVICE)
-        X, _ = self.model(image)
-        X = self.postprocess(X)
+        image = self.preprocess(image).to(DEVICE)
+        X, _ = self.model(image.unsqueeze(0))
+        X = self.postprocess(X.squeeze(0))
         return X
 
     @staticmethod
