@@ -111,6 +111,7 @@ Die Parameter für die FGSM-Attacke befinden sich wie bereits erwähnt im python
 
 	"always_save": True
 	Bestimmt, ob Endergebnisse, deren Konfidenz unter target_threshold liegt trotzdem gespeichert werden sollen.
+	
 	"print": True
 	Bestimmt, ob Informationen, wie die Konfidenzen bei Zwischenschritten, ausgegeben werden sollen.
 
