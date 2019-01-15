@@ -42,23 +42,9 @@ Save Image: Erlaubt, das rechte Bild abzuspeichern.
 
 Anstatt die GUI zu benutzen kann auch direkt in Python gearbeitet werden. Hier stehen auch weitere Operationrn wie der iterierte FGSM-Angriff und die Generation mehrer Täuschender Bilder auf einmal zu Verfügung. Zur Nutzung wird in dem heruntergeladenen Ordner über den Kommandozeilenbefehl Python eine Pythonkonsole geöffnet. Nun muss die entsprechende Klasse importiert werden (from sticker import StickerGenerator bzw. from fgsm inmport FGSM). Anschließend erstellt man mit Instanz = Klassenname(args) eine Instanz der entsprechenden Klasse und führt die gewünschte Methode mit Instanz.Methodenname(args) durch. "args" ist hier ein Platzhalter für die jeweiligen Argumente.
 
-sticker:
-	Die Klasse StickerGenerator kann mit den Werten pixelsize und fringe initialisiert werden (standardeinstellungen: 3, 17), die die Größe der Pixelblöcke, und deren Abstand zum Rand auf beiden Seiten bestimmen. 
-	Dabei sollte die Bildgröße Minus 2 Mal fringe durch Pixelsize teilbar sein.
-		Mit der (Instanz)Methode sticker_batch können nun Sticker generiert werden, die in dem Subverzeichnis für die entsprechende Klasse gespeichert werden. Mit dem optionalen Argument 	
-		title (ohne Angabe: "") kann ein Titel für den Stickerbatch bestimmt werden. Für die einzlnen Sticker werden der Pixel_threshold und die Konfidenz an den Namen anghängt. 
-		Pixel_threshold (ohne Angabe 0.01)  gibt vor, wie viel Konfidenzgewinn ein Pixel bringen muss um in den Sticker aufgenommen zu werden.
-		Es werden diejenigen Sticker gespeichert, die auf schwarzem Hintergrund eine Konfidenz von mehr als save_threshold (ohne Angabe 0.9) für die zugehörige Klasse generieren. Je
-		nach gewählten Parametern kann diese Methode einige Zeit in Anspruch nehmen, da für jeden Pixelblock aufgrund der Maximalanzahl von Anfragen an die Blackbox mindestens eine 
-		Sekunde benötigt wird.
+### Modul fgsm:
 
-		Mit der Methode sticker_attack kann nun ein Sticker auf ein Bild geklebt und dieses gespeichert werden.
-		Als input erhält die Methode die Url des Bildes und eine Ziel-Url zum Abspeichern als strings (in Anführungszeichen). Optional können eine bestimmte Zielklasse ("label", als Zahl codiert, siehe unten), 
-		oder ein bestimmter Sticker als Url ("sticker_url") angegeben werden. Durch setzen des optionalen Argumentes "mode" auf "transparent" kann ein Sticker zudem transparent anstattfüllend aufgeklebt werden.
-
-fgsm:
-
-Basisklasse: FGSM(model=None, cuda=True): Erstellt eine Instanz der FGSM-Klasse, die als Basis für alls FGSM-Angriffe dient. FÜr model kann ein Pytorch-model angegeben werden, welches dann als White Box verwendet wird. Ohne Angabe wird die von uns trainierte White Box verwendet. Cuda bestimmt, ob Cuda genutzt werden soll.
+FGSM(model=None, cuda=True): Erstellt eine Instanz der FGSM-Klasse, die als Basis für alls FGSM-Angriffe dient. FÜr model kann ein Pytorch-model angegeben werden, welches dann als White Box verwendet wird. Ohne Angabe wird die von uns trainierte White Box verwendet. Cuda bestimmt, ob Cuda genutzt werden soll.
 
 Instanzmethoden:
 
@@ -75,6 +61,20 @@ batch_attack_on_label(im_folder,save_folder, target_label, title=""): Wie simple
 
 reload_model(model): Lädt eine neue Whitebox. Das zurücksetzen der Whitebox kann hilfreich sein, wenn diese durch zu viele Korrekturen in einer nicht repräsentativen Region nur noch verzerrte Resultate liefert.
 
+### Modul sticker:
+
+	Die Klasse StickerGenerator kann mit den Werten pixelsize und fringe initialisiert werden (standardeinstellungen: 3, 17), die die Größe der Pixelblöcke, und deren Abstand zum Rand auf beiden Seiten bestimmen. 
+	Dabei sollte die Bildgröße Minus 2 Mal fringe durch Pixelsize teilbar sein.
+		Mit der (Instanz)Methode sticker_batch können nun Sticker generiert werden, die in dem Subverzeichnis für die entsprechende Klasse gespeichert werden. Mit dem optionalen Argument 	
+		title (ohne Angabe: "") kann ein Titel für den Stickerbatch bestimmt werden. Für die einzlnen Sticker werden der Pixel_threshold und die Konfidenz an den Namen anghängt. 
+		Pixel_threshold (ohne Angabe 0.01)  gibt vor, wie viel Konfidenzgewinn ein Pixel bringen muss um in den Sticker aufgenommen zu werden.
+		Es werden diejenigen Sticker gespeichert, die auf schwarzem Hintergrund eine Konfidenz von mehr als save_threshold (ohne Angabe 0.9) für die zugehörige Klasse generieren. Je
+		nach gewählten Parametern kann diese Methode einige Zeit in Anspruch nehmen, da für jeden Pixelblock aufgrund der Maximalanzahl von Anfragen an die Blackbox mindestens eine 
+		Sekunde benötigt wird.
+
+		Mit der Methode sticker_attack kann nun ein Sticker auf ein Bild geklebt und dieses gespeichert werden.
+		Als input erhält die Methode die Url des Bildes und eine Ziel-Url zum Abspeichern als strings (in Anführungszeichen). Optional können eine bestimmte Zielklasse ("label", als Zahl codiert, siehe unten), 
+		oder ein bestimmter Sticker als Url ("sticker_url") angegeben werden. Durch setzen des optionalen Argumentes "mode" auf "transparent" kann ein Sticker zudem transparent anstattfüllend aufgeklebt werden.
 
 
 Die Parameter für die FGSM-Attacke befinden sich wie bereits erwähnt im python-dictionary FGSM_SPECS, welches in config.py 	 gespeichert ist. Im folgenden die Default-Einstellungen und eine Erklärung der Parameter:
