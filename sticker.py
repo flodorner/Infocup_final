@@ -138,7 +138,8 @@ class StickerGenerator:
         return basic_im
 
     def sticker_batch(self, title="", pixel_threshold=0.01, save_threshold=0.9):
-        self._generate_pixels()
+        if np.mean(self.probarray) == 0:
+            self._generate_pixels()
         for i in range(LABEL_AMOUNT):
             self._make_sticker(i, title=title, pixel_threshold=pixel_threshold, save_threshold=save_threshold)
         return None

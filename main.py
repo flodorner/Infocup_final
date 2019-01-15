@@ -46,7 +46,7 @@ class AdversarialStudio:
         self.Sticker_Button_full = Button(self.Top, text="Add sticker", command=lambda: self._sticker_button("full"))
         self.Sticker_Button_trans = Button(self.Top, text="Add transparent sticker",
                                            command=lambda: self._sticker_button("trans"))
-        self.Generate_button = Button(self.Top, text="Generate Face", command=self._generate_button)
+        self.Generate_button = Button(self.Top, text="Add Generative Noise", command=self._generate_button)
 
         self.Interface = Frame(self.Root)
         self.Buttons = Frame(self.Interface)
@@ -230,13 +230,8 @@ class AdversarialStudio:
         self._add_whitebox_info()
 
     def _generate_button(self):
-
-        self.orig_img_PIL = Image.fromarray(torch_to_array(create_image())).resize((IMAGE_SIZE, IMAGE_SIZE))
-        orig_img = ImageTk.PhotoImage(self.orig_img_PIL.resize((256, 256)))
-        self.Original_image.configure(image=orig_img)
-        self.Original_image.image = orig_img
-
-        self.edit_img_PIL = self.orig_img_PIL.copy()
+        start = np.asarray(self.edit_img_PIL.convert("RGB"))
+        self.edit_img_PIL = Image.fromarray(torch_to_array(create_image(start))).resize((IMAGE_SIZE, IMAGE_SIZE))
         edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
         self.Edited_image.configure(image=edit_img)
         self.Edited_image.image = edit_img
