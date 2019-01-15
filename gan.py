@@ -22,10 +22,12 @@ class PretrainedGenerator:
 
     def __init__(self):
         self.model = self.create_generator()
-        self.transform = transforms.ToTensor()
+        self.preprocess = transforms.ToTensor()
+        self.postprocess = transforms.ToPILImage()
 
     def perturb_image(self, image):
-        X, _ = self.model(self.transform(image))
+        X, _ = self.model(self.preprocess(image).unsqueeze(0))
+        X = self.postprocess(X)
         return X
 
     @staticmethod
