@@ -81,9 +81,10 @@ fgsm:
 		das verwendete Modell schnell zu wechseln.  
 
 Die Parameter für die FGSM-Attacke befinden sich wie bereits erwähnt im python-dictionary FGSM_SPECS, welches in config.py 	 gespeichert ist. Im folgenden die Default-Einstellungen und eine Erklärung der Parameter:
+
 	"mode": "l_inf" Gibt die Form der Projektion nach jeder Iteration an. "l_inf": Maximumsnorm "l_2": Euklidnorm "simple": keine Projektion. 
 
-	"bound": 10  Gibt den Maximalwert der gewählten Norm an, auf den der Abstand dann zurück projiziert wird. Für "l_2" empfiehlt sich ein wert um 1000. 
+	"bound": 10  Gibt den Maximalwert der gewählten Norm an, auf den der Abstand dann zurück projiziert wird. Für mode="l_2" empfiehlt sich ein wert um 1000. 
 
 	"magnitude": 1 Gibt das alpha/die Schrittgröße für die FGSM-Iteration an.
 
@@ -110,13 +111,12 @@ Die Parameter für die FGSM-Attacke befinden sich wie bereits erwähnt im python
 
 		
 Weitere Config-Parameter:
+
 	URL = 'https://phinau.de/trasi' , KEY = 'ut6ohb7ZahV9tahjeikoo1eeFaev1aef' (Abfrage der Blackbox)
 	STICKER_DIRECTORY = "Quickstick" Superverzeichnis für das Abspeichern der Sticker.
 	LABEL_AMOUNT = 43 Anzahl der Klassen
 	IMAGE_SIZE = 64 Größe der Bilder in Pixeln
 	WHITEBOX_DIRECTORY = "Models/ResNet.pt" Speicherort des Modells für die White Box
-	
-
 
 Liste der Klassen und der zugordneten numerischen Label: (CLASSNAMEDICT)
 
