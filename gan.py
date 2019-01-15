@@ -26,13 +26,10 @@ class PretrainedGenerator:
         with torch.no_grad():
             image = self.preprocess(image).to(DEVICE).unsqueeze(0)
             X, _ = model(image)
-            print(X)
             X = X.permute(0, 2, 3, 1)
             X = X.contiguous().view(1, 3, 64, 64)
             X = X * 255
-            classifier = create_whitebox(DEVICE)
-            classifier.eval()
-            print(classifier(X).squeeze()[25].item())
+            X = X.detach().cpu().numpy().reshape(64, 64, 3)
         return X
 
     @staticmethod
