@@ -1,9 +1,12 @@
 import torch
 from torch import nn, optim
 import torch.nn.functional as F
-from torch.utils.data import random_split
+from torch.utils.data import random_split, DataLoader
 from tqdm import tqdm
-from config import GAN_SPECS, FACES_DIRECTORY, WHITEBOX_DIRECTORY
+from config import GAN_SPECS, FACES_DIRECTORY, GAN_DIRECTORY
+from whitebox import create_whitebox
+if GAN_SPECS['use_faces_dataset']:
+    from data import Faces
 
 if GAN_SPECS['cuda']:
     if torch.cuda.is_available():
@@ -11,6 +14,24 @@ if GAN_SPECS['cuda']:
     else:
         DEVICE = torch.device('cpu')
         print('Warning: Specified use of CUDA, but CUDA is not available. Proceeding on CPU')
+
+
+
+class PretrainedGenerator:
+
+    def __init__(self):
+        self.model = self.create_generator()
+
+    def perturb_image(self, image):
+        X, _ = self.model(image)
+        return X
+
+    @staticmethod
+    def create_generator():
+        state_dict = torch.load(GAN_DIRECTORY)
+        model = G(3).to(DEVICE)
+        model.load_state_dict(state_dict)
+        return model
 
 class BasicBlock(nn.Module):
 
@@ -152,7 +173,6 @@ adversarial_loss = nn.MSELoss()
 
 def perturbation_loss(perturbation):
     loss = torch.mean(torch.norm(perturbation.view(perturbation.size(0), -1), p=2, dim=1))
-    #loss = torch.max(loss - DELTA, torch.zeros(1, device=DEVICE))
     return loss
 
 def carlini_wagner_loss(pred_c, target):
@@ -160,15 +180,15 @@ def carlini_wagner_loss(pred_c, target):
     not_target_onehot = (target_onehot - 1) * (-1)
     max_f_i, _ = torch.max(pred_c*not_target_onehot, dim=1)
     difference = max_f_i - pred_c[:,target]
-    zeros = torch.zeros((BATCH_SIZE, 1)).to(DEVICE)
+    zeros = torch.zeros((GAN_SPECS['batch_size'], 1)).to(DEVICE)
     loss_adv = torch.max(difference, zeros)
     return loss_adv.sum()
 
 if GAN_SPECS['use_faces_dataset']:
-    data_set = Faces(path=FACES_DIRECTORY, bb_labels=True)
+    data_set = Faces(FACES_DIRECTORY)
     train_size = int(0.8 * len(data_set))
     test_size = len(data_set) - train_size
-    training_set, test_set = random_split(dataset, [train_size, test_size])
+    training_set, test_set = random_split(data_set, [train_size, test_size])
     trainloader = DataLoader(training_set, batch_size=GAN_SPECS['batch_size'], shuffle=True, drop_last=True)
 else:
     print('Warning: If not using faces dataset, you must specify your own dataset!')
@@ -180,6 +200,8 @@ def train(num_epochs, target):
 
     discriminator = D().to(DEVICE)
     optim_discriminator = optim.SGD(discriminator.parameters(), lr=1e-4)
+
+    classifier = create_whitebox(DEVICE)
 
     for epoch in tqdm(range(num_epochs)):
         generator.train()
@@ -237,6 +259,4 @@ def train(num_epochs, target):
     torch.cuda.empty_cache()
     return generator, discriminator
 
-def load_generator(path):
-    state_dict = torch.load("Models2/advganG25_99.pt")
-    model =
+

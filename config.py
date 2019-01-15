@@ -1,9 +1,13 @@
 URL = 'https://phinau.de/trasi'
 KEY = 'ut6ohb7ZahV9tahjeikoo1eeFaev1aef'
 STICKER_DIRECTORY = "Quickstick"
+FACES_DIRECTORY = "Faces/"
+GTSRB_DIRECTORY = 'GTSRB/'
 LABEL_AMOUNT = 43
 IMAGE_SIZE = 64
 WHITEBOX_DIRECTORY = "Models/ResNet.pt"
+GAN_DIRECTORY = "Models/Generator.pt"
+BB_LABELS_DIRECTORY = 'BBLabels/'
 
 FGSM_SPECS = {
     "mode": "l_inf",
@@ -22,6 +26,16 @@ FGSM_SPECS = {
     "retrain_threshold": 0.0001,
     "always_save": True,
     "print": True
+}
+
+GAN_SPECS = {
+    "alpha": 10,
+    "beta": 0.1,
+    "epsilon": 0.05,
+    "batch_size": 256,
+    "cuda": True,
+    "modelsaving_directory": '',
+    "use_faces_dataset": True
 }
 
 CLASSNAMEDICT = {'Zulässige Höchstgeschwindigkeit (20)': 0,
