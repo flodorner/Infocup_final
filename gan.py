@@ -31,14 +31,18 @@ class PretrainedGenerator:
             image = self.preprocess(image).to(DEVICE)
             X, _ = self.model(image.unsqueeze(0))
             X = image.cpu().detach()
+            print(_.shape)
+            print((image - X).shape)
             X = self.postprocess(X.squeeze(0))
         return X
 
     @staticmethod
     def create_generator():
-        state_dict = torch.load(GAN_DIRECTORY)
         model = G(3).to(DEVICE)
-        model.load_state_dict(state_dict)
+        if not torch.cuda.is_available():
+            model.load_state_dict(torch.load(GAN_DIRECTORY, map_location="cpu"))
+            return model
+        model.load_state_dict(torch.load(GAN_DIRECTORY))
         return model
 
 class BasicBlock(nn.Module):
