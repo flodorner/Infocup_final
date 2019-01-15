@@ -26,7 +26,7 @@ def project_l_2(x, base, bound):
 
 # noinspection PyCallingNonCallable
 class FGSM:
-    def __init__(self, model=None, cuda=False):
+    def __init__(self, model=None, cuda=True):
 
         if torch.cuda.is_available() and cuda is True:
             self.device = torch.device('cuda:0')
