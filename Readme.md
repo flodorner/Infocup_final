@@ -122,7 +122,12 @@ Die Parameter für die FGSM-Attacke befinden sich wie bereits erwähnt im python
 	
 	"print": True
 	Bestimmt, ob Informationen, wie die Konfidenzen bei Zwischenschritten, ausgegeben werden sollen.
+	
+##### Modul GAN:
 
+Möchte man das vortrainierte Modell in großem Stil auf den [Faces](http://conradsanderson.id.au/lfwcrop/) - Datensatz anwenden, kann man dafür die PretrainedGenerator-Klasse erweitern.
+
+Möchte man das GAN neu trainieren, ist dies durch train(num_epochs, target) leicht möglich. Möchte man eine Grafikkarte verwenden, sollte man DEVICE oben im Dokument entsprechend anpassen.
 		
 Weitere Config-Parameter:
 
