@@ -66,9 +66,11 @@ reload_model(model): Lädt eine neue Whitebox. Das zurücksetzen der Whitebox ka
 StickerGenerator(pixelsize=3, fringe=17): Erstellt eine Instanz der StickerGenerator-Klasse als Basis für die Stickerangriffe. Der Parameter pixelsize bestimmt die Größe der Pixelblöcke für die Generation der Sticker. Fringe bestimmt die Größe des Randes, an dem keine Pixel getestet werden. Dabei sollte Bildgröße - 2 * fringe durch pixelsize teilbar sein.
 
 ###### Instanzmethoden:
-sticker_batch(title="", pixel_threshold=0.01, save_threshold=0.9): Erstellt Sticker. Durch title lässt sich der Name, unter dem die Sticker abgespeichert werden ändern. Pixel_threshold bestimmt, wieviel zusätzliche Konfidenz ein Block bringen muss, um in den Sticker aufgenommen zu werden. Es werden nur Sticker gespeichert, die mit einer Konfidenz über save_threshold von der Black Box erkannt werden. Je nach Parametern kann dies einige Zeit in Anspruch nehmen, da die Rate an Anfragen an die Blackbox begrenzt ist.
+sticker_batch(title="", pixel_threshold=0.01, save_threshold=0.9): Erstellt Sticker.
+Durch title lässt sich der Name, unter dem die Sticker abgespeichert werden ändern. Pixel_threshold bestimmt, wieviel zusätzliche Konfidenz ein Block bringen muss, um in den Sticker aufgenommen zu werden. Es werden nur Sticker gespeichert, die mit einer Konfidenz über save_threshold von der Black Box erkannt werden. Je nach Parametern kann dies einige Zeit in Anspruch nehmen, da die Rate an Anfragen an die Blackbox begrenzt ist.
 
-sticker_attack(image_url, save_url, sticker_url=None, label=None, mode="full"): Klebt einen Sticker auf das Bild aus image_url und speichert das Ergebnis unter save_url ab. Durch sticker_url kann ein Sticker vorgegeben werden, durch label ein label für das, falls vorhanden ein zufälliger ausgewählt wird. Durch setzen von mode auf "transparent" wird der Sticker transparent aufgeklebt.
+sticker_attack(image_url, save_url, sticker_url=None, label=None, mode="full"): Klebt einen Sticker auf das Bild aus image_url und speichert das Ergebnis unter save_url ab. 
+Durch sticker_url kann ein Sticker vorgegeben werden, durch label ein label für das, falls vorhanden ein zufälliger ausgewählt wird. Durch setzen von mode auf "transparent" wird der Sticker transparent aufgeklebt.
 		
 ##### Parameter 
 
