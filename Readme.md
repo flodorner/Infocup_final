@@ -3,7 +3,7 @@
 Die Software basiert auf Python und besteht aus einer GUI zur einfachen Erstellung 
 von Bildern zur Täuschung des gegebenen neuronalen Netzes sowie einigen Funktionen zur automatischen 
 Erstellung von täuschenden Stickern und zur automatischen Erstellung täuschender Bilder aus 
-einem gegebenen Bild. Sämtliche Bildmethoden wurden primär mit 64x64 RGB-pngs getestet, RGBA sollte aber eigentlich keine Probleme darstellen. Das Verwenden andere Formate kann potentiell zu Fehlern führen. 
+einem gegebenen Bild. <br> Sämtliche Bildmethoden wurden primär mit 64x64 RGB-pngs getestet, RGBA sollte aber eigentlich keine Probleme darstellen. Das Verwenden andere Formate kann potentiell zu Fehlern führen. 
 
 ### Installation (Ubuntu 18.04 LTS AMD64)
 
@@ -45,8 +45,7 @@ Anstatt die GUI zu benutzen kann auch direkt in Python gearbeitet werden. Hier s
 
 ##### Modul fgsm:
 
-FGSM(model=None, cuda=True): Erstellt eine Instanz der FGSM-Klasse, die als Basis für alls FGSM-Angriffe dient.
-
+FGSM(model=None, cuda=True): Erstellt eine Instanz der FGSM-Klasse, die als Basis für alls FGSM-Angriffe dient. <br>
 *Für model kann ein Pytorch-model angegeben werden, welches dann als White Box verwendet wird. Ohne Angabe wird die von uns       trainierte White Box verwendet. Cuda bestimmt, ob Cuda genutzt werden soll.*
 
 ###### Instanzmethoden:
@@ -54,8 +53,7 @@ FGSM(model=None, cuda=True): Erstellt eine Instanz der FGSM-Klasse, die als Basi
 preview_im(im_url):
 Für eine gültige Png-Bild-Url werde die fünf Klassen (mit zugehörigen numerischen Labels) mit der höchsten Konfidenz der Black Box ausgegeben.
 
-simple_attack(im_url, save_url): Führt eine iterierte FGSM-Attack ausgehend vom Bild in im_url auf die vielversprechendste Klasse aus und speichert das Ergebnis bei Erfolg in save_url. 
-
+simple_attack(im_url, save_url): Führt eine iterierte FGSM-Attack ausgehend vom Bild in im_url auf die vielversprechendste Klasse aus und speichert das Ergebnis bei Erfolg in save_url. <br>
 *Eine genauere Parametrisierung des Angriffes erfolgt über das Dictionary FGSM_SPECS in config.py, genau wie für die nächste Methode*
 
 attack_on_label(im_url, save_url, target_label): Wie simple_attack, das anzugreifende numerische Label wird jedoch selbst ausgewählt.
@@ -64,24 +62,19 @@ simple_batch_attack(im_folder, save_folder, title=""): Führt simple_attack für
 
 batch_attack_on_label(im_folder,save_folder, target_label, title=""): Wie simple_batch_attack, nur mit selbstgewähltem Label
 
-reload_model(model): Lädt eine neue Whitebox. 
-
+reload_model(model): Lädt eine neue Whitebox. <br>
 *Das zurücksetzen der Whitebox kann hilfreich sein, wenn diese durch zu viele Korrekturen in einer nicht repräsentativen Region nur noch verzerrte Resultate liefert.*
 
 ##### Modul sticker:
 
-StickerGenerator(pixelsize=3, fringe=17): Erstellt eine Instanz der StickerGenerator-Klasse als Basis für die Stickerangriffe.
-
+StickerGenerator(pixelsize=3, fringe=17): Erstellt eine Instanz der StickerGenerator-Klasse als Basis für die Stickerangriffe. <br>
 *Der Parameter pixelsize bestimmt die Größe der Pixelblöcke für die Generation der Sticker. Fringe bestimmt die Größe des Randes, an dem keine Pixel getestet werden. Dabei sollte Bildgröße - 2 * fringe durch pixelsize teilbar sein.*
 
 ###### Instanzmethoden:
-sticker_batch(title="", pixel_threshold=0.01, save_threshold=0.9): Erstellt Sticker.
+sticker_batch(title="", pixel_threshold=0.01, save_threshold=0.9): Erstellt Sticker. <br>
+*Durch title lässt sich der Name, unter dem die Sticker abgespeichert werden, anpassen. Pixel_threshold bestimmt, wieviel zusätzliche Konfidenz ein Block bringen muss, um in den Sticker aufgenommen zu werden. Es werden nur Sticker gespeichert, die mit einer Konfidenz über save_threshold von der Black Box erkannt werden. Je nach Parametern kann dies einige Zeit in Anspruch nehmen, da die Rate an Anfragen an die Blackbox begrenzt ist.*
 
-
-*Durch title lässt sich der Name, unter dem die Sticker abgespeichert werden ändern. Pixel_threshold bestimmt, wieviel zusätzliche Konfidenz ein Block bringen muss, um in den Sticker aufgenommen zu werden. Es werden nur Sticker gespeichert, die mit einer Konfidenz über save_threshold von der Black Box erkannt werden. Je nach Parametern kann dies einige Zeit in Anspruch nehmen, da die Rate an Anfragen an die Blackbox begrenzt ist.*
-
-sticker_attack(image_url, save_url, sticker_url=None, label=None, mode="full"): Klebt einen Sticker auf das Bild aus image_url und speichert das Ergebnis unter save_url ab. 
-
+sticker_attack(image_url, save_url, sticker_url=None, label=None, mode="full"): Klebt einen Sticker auf das Bild aus image_url und speichert das Ergebnis unter save_url ab.  <br>
 *Durch sticker_url kann ein Sticker vorgegeben werden, durch label ein label für das, falls vorhanden ein zufälliger ausgewählt wird. Durch setzen von mode auf "transparent" wird der Sticker transparent aufgeklebt.*
 		
 ##### Parameter 
