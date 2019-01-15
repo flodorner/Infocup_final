@@ -184,16 +184,17 @@ def carlini_wagner_loss(pred_c, target):
     loss_adv = torch.max(difference, zeros)
     return loss_adv.sum()
 
-if GAN_SPECS['use_faces_dataset']:
-    data_set = Faces(FACES_DIRECTORY)
-    train_size = int(0.8 * len(data_set))
-    test_size = len(data_set) - train_size
-    training_set, test_set = random_split(data_set, [train_size, test_size])
-    trainloader = DataLoader(training_set, batch_size=GAN_SPECS['batch_size'], shuffle=True, drop_last=True)
-else:
-    print('Warning: If not using faces dataset, you must specify your own dataset!')
 
 def train(num_epochs, target):
+
+    if GAN_SPECS['use_faces_dataset']:
+        data_set = Faces(FACES_DIRECTORY)
+        train_size = int(0.8 * len(data_set))
+        test_size = len(data_set) - train_size
+        training_set, test_set = random_split(data_set, [train_size, test_size])
+        trainloader = DataLoader(training_set, batch_size=GAN_SPECS['batch_size'], shuffle=True, drop_last=True)
+    else:
+        print('Warning: If not using faces dataset, you must specify your own dataset!')
 
     generator = G(3).to(DEVICE)
     optim_generator = optim.Adam(generator.parameters(), lr=1e-4)

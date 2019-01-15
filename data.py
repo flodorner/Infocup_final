@@ -76,6 +76,7 @@ class GTSRB(Dataset):
             train_labels += labels
         return train_images, train_labels
 
+
 class Faces(Dataset):
 
     def __init__(self, bb_labels=True):
