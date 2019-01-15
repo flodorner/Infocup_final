@@ -205,7 +205,7 @@ class FGSM:
             print("attacking label " + str(target_label))
         return self.attack_on_label(im_url, save_url, target_label)
 
-    def simple_batch_attack(self, im_folder, save_folder):
+    def simple_batch_attack(self, im_folder, save_folder, title=""):
         imlist = glob(im_folder + "/*")
         if len(imlist) == 0:
             raise Exception("im_folder is empty!")
@@ -217,12 +217,14 @@ class FGSM:
             if imlist[i].split(".")[-1] != "png":
                 continue
             else:
-                self.simple_attack(imlist[i], save_folder + "/" + imlist[i].replace("\\", "/").split("/")[-1])
+                save_name = save_folder + "/" + imlist[i].replace("\\", "/").split("/")[-1]
+                save_name = save_name.split(".")[0]
+                save_name = save_name + title + ".png"
+                self.simple_attack(imlist[i], save_name)
                 sleep(self.restart_max_amount + 2)
         return None
 
-
-    def batch_attack_on_label(self, im_folder,save_folder, target_label):
+    def batch_attack_on_label(self, im_folder,save_folder, target_label, title=""):
         imlist = glob(im_folder + "/*")
         if len(imlist) == 0:
             raise Exception("im_folder is empty!")
@@ -234,7 +236,10 @@ class FGSM:
             if imlist[i].split(".")[-1] != "png":
                 continue
             else:
-                self.attack_on_label(imlist[i], save_folder + "/" + imlist[i].replace("\\", "/").split("/")[-1],
+                save_name = save_folder + "/" + imlist[i].replace("\\", "/").split("/")[-1]
+                save_name = save_name.split(".")[0]
+                save_name = save_name + title + ".png"
+                self.attack_on_label(imlist[i], save_name,
                                      target_label)
                 sleep(self.restart_max_amount + 2)
         return None
@@ -250,3 +255,4 @@ class FGSM:
         print("Labels with highest confidence:")
         print(query_names(im_url))
         print("try attacking one of those labels!")
+        return query_names(im_url)

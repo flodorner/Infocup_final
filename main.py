@@ -51,7 +51,7 @@ class AdversarialStudio:
         self.Interface = Frame(self.Root)
         self.Buttons = Frame(self.Interface)
         self.Noise_button = Button(self.Buttons, text="Add Noise", command=self._advers_attack)
-        self.Retrain_button = Button(self.Buttons, text="Retrain Whitebox", command=self._retrain_whitebox)
+        self.Retrain_button = Button(self.Buttons, text="Retrain White Box", command=self._retrain_whitebox)
 
         self.Label_text = Label(self.Interface, text="Target Label:")
         self.Label_param = Entry(self.Interface,
@@ -165,7 +165,7 @@ class AdversarialStudio:
         self.Generator.magnitude = int(self.Magnitude_param.get())
 
     def _add_whitebox_info(self):
-        self.Whitebox_description.configure(text="Whitebox prediction: ")
+        self.Whitebox_description.configure(text="White Box prediction: ")
         self.edit_img_PIL.save("GUI/temp.png")
         im = url_to_torch("GUI/temp.png")
 

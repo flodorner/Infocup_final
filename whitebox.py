@@ -111,8 +111,7 @@ def evaluate(model, device, loader, loss_function=nn.MSELoss(), name="validation
     return None
 
 
-def simple_train_loop(model, device, train_loader, val_loader, save_directory):
-    num_epochs = 50
+def simple_train_loop(model, device, train_loader, val_loader, save_directory, num_epochs=50):
     for epoch in range(1, num_epochs + 1):
         print('Now in epoch %d' % epoch)
         train(model, device, train_loader)
