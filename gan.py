@@ -10,8 +10,6 @@ if GAN_SPECS['use_faces_dataset']:
     from data import Faces
 
 DEVICE = 'cpu'
-import matplotlib.pyplot as plt
-import numpy as np
 class PretrainedGenerator:
 
     def __init__(self):
