@@ -10,8 +10,6 @@ from PIL import ImageTk, Image
 from os import path
 import numpy as np
 import textwrap
-from matplotlib import pyplot as plt
-
 
 class AdversarialStudio:
 
@@ -235,8 +233,6 @@ class AdversarialStudio:
         start = np.asarray(self.edit_img_PIL.convert("RGB"))
         self.edit_img_PIL = self.GAN.perturb_image(start).resize((IMAGE_SIZE, IMAGE_SIZE))
         edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
-        plt.imshow(self.edit_img_PIL)
-        plt.show()
         self.Edited_image.configure(image=edit_img)
         self.Edited_image.image = edit_img
 
