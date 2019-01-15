@@ -18,7 +18,6 @@ class PretrainedGenerator:
         self.preprocess = transforms.ToTensor()
 
     def perturb_image(self, image):
-        model = G(3).to(DEVICE)
         with torch.no_grad():
             image = self.preprocess(image).to(DEVICE).unsqueeze(0)
             X, _ = self.model(image)
@@ -27,8 +26,6 @@ class PretrainedGenerator:
             X = X * 255
             X = X.detach().cpu().numpy().reshape(64, 64, 3)
         return X
-
-    #def perturb_images(self, ):
 
     @staticmethod
     def create_generator():
