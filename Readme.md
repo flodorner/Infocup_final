@@ -46,7 +46,7 @@ Anstatt die GUI zu benutzen kann auch direkt in Python gearbeitet werden. Hier s
 
 FGSM(model=None, cuda=True): Erstellt eine Instanz der FGSM-Klasse, die als Basis für alls FGSM-Angriffe dient. FÜr model kann ein Pytorch-model angegeben werden, welches dann als White Box verwendet wird. Ohne Angabe wird die von uns trainierte White Box verwendet. Cuda bestimmt, ob Cuda genutzt werden soll.
 
-Instanzmethoden:
+###### Instanzmethoden:
 
 preview_im(im_url): Für eine gültige Png-Bild-Url werde die fünf Klassen (mit zugehörigen numerischen Labels) mit der höchsten Konfidenz der Black Box ausgegeben.
 
@@ -58,54 +58,48 @@ simple_batch_attack(im_folder, save_folder, title=""): Führt simple_attack für
 
 batch_attack_on_label(im_folder,save_folder, target_label, title=""): Wie simple_batch_attack, nur mit selbstgewähltem Label
 
-
 reload_model(model): Lädt eine neue Whitebox. Das zurücksetzen der Whitebox kann hilfreich sein, wenn diese durch zu viele Korrekturen in einer nicht repräsentativen Region nur noch verzerrte Resultate liefert.
 
 ##### Modul sticker:
 
-	Die Klasse StickerGenerator kann mit den Werten pixelsize und fringe initialisiert werden (standardeinstellungen: 3, 17), die die Größe der Pixelblöcke, und deren Abstand zum Rand auf beiden Seiten bestimmen. 
-	Dabei sollte die Bildgröße Minus 2 Mal fringe durch Pixelsize teilbar sein.
-		Mit der (Instanz)Methode sticker_batch können nun Sticker generiert werden, die in dem Subverzeichnis für die entsprechende Klasse gespeichert werden. Mit dem optionalen Argument 	
-		title (ohne Angabe: "") kann ein Titel für den Stickerbatch bestimmt werden. Für die einzlnen Sticker werden der Pixel_threshold und die Konfidenz an den Namen anghängt. 
-		Pixel_threshold (ohne Angabe 0.01)  gibt vor, wie viel Konfidenzgewinn ein Pixel bringen muss um in den Sticker aufgenommen zu werden.
-		Es werden diejenigen Sticker gespeichert, die auf schwarzem Hintergrund eine Konfidenz von mehr als save_threshold (ohne Angabe 0.9) für die zugehörige Klasse generieren. Je
-		nach gewählten Parametern kann diese Methode einige Zeit in Anspruch nehmen, da für jeden Pixelblock aufgrund der Maximalanzahl von Anfragen an die Blackbox mindestens eine 
-		Sekunde benötigt wird.
+StickerGenerator(pixelsize=3, fringe=17): Erstellt eine Instanz der StickerGenerator-Klasse als Basis für die Stickerangriffe. Der Parameter pixelsize bestimmt die Größe der Pixelblöcke für die Generation der Sticker. Fringe bestimmt die Größe des Randes, an dem keine Pixel getestet werden. Dabei sollte Bildgröße - 2 * fringe durch pixelsize teilbar sein.
 
-		Mit der Methode sticker_attack kann nun ein Sticker auf ein Bild geklebt und dieses gespeichert werden.
-		Als input erhält die Methode die Url des Bildes und eine Ziel-Url zum Abspeichern als strings (in Anführungszeichen). Optional können eine bestimmte Zielklasse ("label", als Zahl codiert, siehe unten), 
-		oder ein bestimmter Sticker als Url ("sticker_url") angegeben werden. Durch setzen des optionalen Argumentes "mode" auf "transparent" kann ein Sticker zudem transparent anstattfüllend aufgeklebt werden.
+###### Instanzmethoden:
+sticker_batch(title="", pixel_threshold=0.01, save_threshold=0.9): Erstellt Sticker. Durch title lässt sich der Name, unter dem die Sticker abgespeichert werden ändern. Pixel_threshold bestimmt, wieviel zusätzliche Kofidenz ein Block bringen muss, um in den Sticker aufgenommen zu werden. Es werden nur Sticker gespeichert, die mit einer Kofidenz über save_threshold von der Black Box erkannt werden. Je nach Parametern kann dies einige Zeit in Anspruch nehmen, da die Rate an Anfragen an die Blackbox begrenzt ist.
 
+sticker_attack(image_url, save_url, sticker_url=None, label=None, mode="full"): Klebt einen Sticker auf das Bild aus image_url und speichert das Ergebnis unter save_url ab. Durch sticker_url kann ein Sticker vorgegeben werden, durch label ein label für das, falls vorhanden ein zufälliger ausgewählt wird. Durch setzen von mode auf "transparent" wird der Sticker transparent aufgeklebt.
+		
 ##### Parameter 
 
 Die Parameter für die FGSM-Attacke befinden sich wie bereits erwähnt im python-dictionary FGSM_SPECS, welches in config.py 	 gespeichert ist. Im folgenden die Default-Einstellungen und eine Erklärung der Parameter:
 
-	"mode": "l_inf" Gibt die Form der Projektion nach jeder Iteration an. "l_inf": Maximumsnorm "l_2": Euklidnorm "simple": keine Projektion. 
+"mode": "l_inf" Gibt die Form der Projektion nach jeder Iteration an. "l_inf": Maximumsnorm "l_2": Euklidnorm "simple": keine Projektion. 
 
-	"bound": 10  Gibt den Maximalwert der gewählten Norm an, auf den der Abstand dann zurück projiziert wird. Für mode="l_2" empfiehlt sich ein wert um 1000. 
+"bound": 10  Gibt den Maximalwert der gewählten Norm an, auf den der Abstand dann zurück projiziert wird. Für mode="l_2" empfiehlt sich ein wert um 1000. 
 
-	"magnitude": 1 Gibt das alpha/die Schrittgröße für die FGSM-Iteration an.
+"magnitude": 
+1 Gibt das alpha/die Schrittgröße für die FGSM-Iteration an.
 
-	"max_fgsm_iterations": 25 Gibt die Maximale Schrittanzahl in der FGSM-Iteration an. 
+"max_fgsm_iterations": 25 Gibt die Maximale Schrittanzahl in der FGSM-Iteration an. 
 
-	"target_threshold": 0.99 Schwellenwert für die Konfidenz. Wenn dieser während der FGSM-Iteration überschritten wird, unterbricht diese und prüft den Abstand zwischen Black- und Whitebox und trainiert dann entweder die Whitebox nach, oder beendet bei Erfolg die Schleife.
+"target_threshold": 0.99 Schwellenwert für die Konfidenz. Wenn dieser während der FGSM-Iteration überschritten wird, unterbricht diese und prüft den Abstand zwischen Black- und Whitebox und trainiert dann entweder die Whitebox nach, oder beendet bei Erfolg die Schleife.
 
-	"fgsm_restart": "last" Bestimmt, ob nach dem adjustieren der Whitebox von vorne ("original") oder mit dem Endergebnis der letzten Iteration ("last") begonnen werden soll.
+"fgsm_restart": "last" Bestimmt, ob nach dem adjustieren der Whitebox von vorne ("original") oder mit dem Endergebnis der letzten Iteration ("last") begonnen werden soll.
 
-	"restart_max_amount": 10 Bestimmt die Maximale Anzahl an Versuchen, die Whitebox zu adjustieren.
+"restart_max_amount": 10 Bestimmt die Maximale Anzahl an Versuchen, die Whitebox zu adjustieren.
 
-	"restart_accuracy_bound": 0.0001 Beträgt der Quadrierte Abstand zwischen Vorhersage von White- und Blackbox am ende einer FGSM-Iterarion weniger als diese Schwelle, wird die Iteration abgebrochen.
+"restart_accuracy_bound": 0.0001 Beträgt der Quadrierte Abstand zwischen Vorhersage von White- und Blackbox am ende einer FGSM-Iterarion weniger als diese Schwelle, wird die Iteration abgebrochen.
 
-	"retrain_mode": "last" Bestimmt, ob nur für die letzte FGSM-Iteration adjustiert werden soll ("last"), oder ob auch die Ergebnisse der vorigen Iterationen einbezogen werden sollen ("full").
+"retrain_mode": "last" Bestimmt, ob nur für die letzte FGSM-Iteration adjustiert werden soll ("last"), oder ob auch die Ergebnisse der vorigen Iterationen einbezogen werden sollen ("full").
 
-	"retrain_lr": 0.00001 Bestimmt die Lerngeschwindigkeit beim Adjustieren. Niedrige werte verlangsamen die Anpassung, hohe führen zu lokaler Überanpassung oder sogar zu schlechterer Konvergenz.
+"retrain_lr": 0.00001 Bestimmt die Lerngeschwindigkeit beim Adjustieren. Niedrige werte verlangsamen die Anpassung, hohe führen zu lokaler Überanpassung oder sogar zu schlechterer Konvergenz.
 
-	"retrain_max_gradient_steps": 10 Bestimmt die Anzahl der Optimierungsschritte beim Adjustieren. Effekte ählich wie bei der Lerngeschwindigkeit, hohe Werte verschlechtern die Konvergenz hier nicht, benötigen aber Zeit.
+"retrain_max_gradient_steps": 10 Bestimmt die Anzahl der Optimierungsschritte beim Adjustieren. Effekte ählich wie bei der Lerngeschwindigkeit, hohe Werte verschlechtern die Konvergenz hier nicht, benötigen aber Zeit.
 
-	"retrain_threshold": 0.0001 Bestimmt den Schwellenwert für den Quadratischen Abstand zwischen der Vorhersage von Black- und Whitebox, an dem das Adjustieren abgebrochen wird.
+"retrain_threshold": 0.0001 Bestimmt den Schwellenwert für den Quadratischen Abstand zwischen der Vorhersage von Black- und Whitebox, an dem das Adjustieren abgebrochen wird.
 
-	"always_save": True Bestimmt, ob Endergebnisse, deren Konfidenz unter target_threshold liegt trotzdem gespeichert werden sollen.
-	"print": True Bestimmt, ob Informationen, wie die Konfidenzen bei Zwischenschritten, ausgegeben werden sollen.
+"always_save": True Bestimmt, ob Endergebnisse, deren Konfidenz unter target_threshold liegt trotzdem gespeichert werden sollen.
+"print": True Bestimmt, ob Informationen, wie die Konfidenzen bei Zwischenschritten, ausgegeben werden sollen.
 
 		
 Weitere Config-Parameter:
@@ -114,7 +108,8 @@ Weitere Config-Parameter:
 	STICKER_DIRECTORY = "Quickstick" Superverzeichnis für das Abspeichern der Sticker.
 	LABEL_AMOUNT = 43 Anzahl der Klassen
 	IMAGE_SIZE = 64 Größe der Bilder in Pixeln
-	WHITEBOX_DIRECTORY = "Models/ResNet.pt" Speicherort des Modells für die White Box
+	WHITEBOX_DIRECTORY = "Models/ResNet.pt" Speicherort des Modells für die White Box. 
+	Bei abweichender Architektur muss diese zusätzlich in whitebox.py angepasst werden. 
 
 Liste der Klassen und der zugordneten numerischen Label: (CLASSNAMEDICT)
 
