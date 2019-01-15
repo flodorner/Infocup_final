@@ -3,7 +3,7 @@
 Die Software basiert auf Python und besteht aus einer GUI zur einfachen Erstellung 
 von Bildern zur Täuschung des gegebenen neuronalen Netzes sowie einigen Funktionen zur automatischen 
 Erstellung von täuschenden Stickern und zur automatischen Erstellung täuschender Bilder aus 
-einem gegebenen Bild. 
+einem gegebenen Bild. Sämtliche Bildmethoden wurden Primär mit 64x64 "RGB"-png dateien getestet, "RGBA" sollte aber eigentlich keine Probleme darstellen. Das Verwenden andere Formate kann potentiell zu Fehlern führen. 
 
 #### Installation (Ubuntu 18.04 LTS AMD64)
 
@@ -26,25 +26,7 @@ In dem heruntergeladenen Ordner: python main.py
 
 Load Image: Erlaubt, ein Bild einzuladen. Für die Nutzung des Generative Adversarial Networks (GAN) sollte ein Bild aus dem Ordner "Faces" geladen werden.
 
-Retrain Whitebox: Anpassung der Whitebox anhand der Vorhersagen der Blackbox.
-
-4. Die Generation von Stickern und die strukturierte Generation von täuschendem Rauschen passieren über Instanzmethoden der Klassen StickerGenerator in sticker.py bzw. FGSM in fgsm.py.
-Um eine der Methoden auszuführen wird im entsprechenden Ordner eine python Konsole geöffnet, die jeweilige Klasse importiert (from sticker import StickerGenerator / from fgsm import FGSM) und eine Instanz erstellt
-(Instanz = StickerGenerator() bzw FGSM()). Durch Instanz.methode() (z.B. Instanz.make_sticker()) lassen sich nun die entsprechenden Methoden benutzen. 
-Sämtliche Bildmethoden wurden Primär mit 64x64 "RGB"-png dateien getestet, "RGBA" sollte aber eigentlich keine Probleme darstellen. Das Verwenden andere Formate kann potentiell zu Fehlern führen. 
-
-Beschreibung der Komponenten:
-gui:
-	Das Aufrufen von gui.py in Python öffnet die Benutzeroberfläche. 
-	Links in der Mitte wird das Ausgangsbild und rechts in der Mitte das neue Bild angezeigt. 
-
-	Über den Load image Button wird ein Ladedialog geöffnet der es erlaubt ein Bild einzuladen. Dieses erscheint
-	zunächst in beiden Fenstern. Weiterhin wird nach laden des Bildes unter dem Bild die Klasse mit der höchsten 
-	Konfidenz der Blackbox für das Bild, sowie die Konfidenz angezeigt.
-
-	Auf der rechten Seite daneben steht die Konfidenz, die unsere Whietebox dem rechten Bild zuordnet.
-	Durch den Retrain Whitebox Knopf etwas weiter oben lässt sich die Whitebox anpassen, 
-	um die Diskrepanz in den Konfidenzen zu reduzieren. 
+Retrain Whitebox: Anpassung der Whitebox anhand der Vorhersagen der Black Box.
 
 	Durch den Add Noise Knopf kann Rauschen zu dem Bild auf der rechten Seite hinzugefügt werden,
 	das die Konfidenz der Black und der Whitebox in die gewählte Klasse  im Normalfall erhöhen sollte.
