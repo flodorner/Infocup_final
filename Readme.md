@@ -54,7 +54,9 @@ FGSM(model=None, cuda=True): Erstellt eine Instanz der FGSM-Klasse, die als Basi
 preview_im(im_url):
 Für eine gültige Png-Bild-Url werde die fünf Klassen (mit zugehörigen numerischen Labels) mit der höchsten Konfidenz der Black Box ausgegeben.
 
-simple_attack(im_url, save_url): Führt eine iterierte FGSM-Attack ausgehend vom Bild in im_url auf die vielversprechendste Klasse aus und speichert das Ergebnis bei Erfolg in save_url. Eine genauere Parametrisierung des Angriffes erfolgt über das Dictionary FGSM_SPECS in config.py, genau wie für die nächste Methode.
+simple_attack(im_url, save_url): Führt eine iterierte FGSM-Attack ausgehend vom Bild in im_url auf die vielversprechendste Klasse aus und speichert das Ergebnis bei Erfolg in save_url. 
+
+*Eine genauere Parametrisierung des Angriffes erfolgt über das Dictionary FGSM_SPECS in config.py, genau wie für die nächste Methode*
 
 attack_on_label(im_url, save_url, target_label): Wie simple_attack, das anzugreifende numerische Label wird jedoch selbst ausgewählt.
 
@@ -62,7 +64,9 @@ simple_batch_attack(im_folder, save_folder, title=""): Führt simple_attack für
 
 batch_attack_on_label(im_folder,save_folder, target_label, title=""): Wie simple_batch_attack, nur mit selbstgewähltem Label
 
-reload_model(model): Lädt eine neue Whitebox. Das zurücksetzen der Whitebox kann hilfreich sein, wenn diese durch zu viele Korrekturen in einer nicht repräsentativen Region nur noch verzerrte Resultate liefert.
+reload_model(model): Lädt eine neue Whitebox. 
+
+*Das zurücksetzen der Whitebox kann hilfreich sein, wenn diese durch zu viele Korrekturen in einer nicht repräsentativen Region nur noch verzerrte Resultate liefert.*
 
 ##### Modul sticker:
 
