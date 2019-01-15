@@ -20,9 +20,12 @@ class PretrainedGenerator:
         self.preprocess = transforms.ToTensor()
 
     def perturb_image(self, image):
+        model = G(3).to(DEVICE)
+        model.load_state_dict(torch.load(GAN_DIRECTORY, map_location="cpu"))
+        model.eval()
         with torch.no_grad():
             image = self.preprocess(image).to(DEVICE).unsqueeze(0)
-            X, _ = self.model(image)
+            X, _ = model(image)
             print(X)
             X = X.permute(0, 2, 3, 1)
             X = X.contiguous().view(1, 3, 64, 64)
@@ -130,6 +133,7 @@ class ResBlockIN(nn.Module):
 
 
 class ImageToImage(nn.Module):
+    """Slightly modified version of architecture used in AdvGAN-Paper."""
 
     def __init__(self, nc=3):
         super().__init__()
