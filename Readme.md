@@ -1,11 +1,11 @@
-### InformatiCup Abgabe Florian Dorner und Julian Stastny
+## InformatiCup Abgabe Florian Dorner und Julian Stastny
 
 Die Software basiert auf Python und besteht aus einer GUI zur einfachen Erstellung 
 von Bildern zur Täuschung des gegebenen neuronalen Netzes sowie einigen Funktionen zur automatischen 
 Erstellung von täuschenden Stickern und zur automatischen Erstellung täuschender Bilder aus 
 einem gegebenen Bild. Sämtliche Bildmethoden wurden primär mit 64x64 RGB-pngs getestet, RGBA sollte aber eigentlich keine Probleme darstellen. Das Verwenden andere Formate kann potentiell zu Fehlern führen. 
 
-#### Installation (Ubuntu 18.04 LTS AMD64)
+### Installation (Ubuntu 18.04 LTS AMD64)
 
 Am einfachsten ist die Installation auf der Referenzplattform durchzuführen, indem in folgender Reihenfolge
 die Installationsanweisungen auf den jeweiligen Projektseiten befolgt werden:
@@ -15,14 +15,14 @@ die Installationsanweisungen auf den jeweiligen Projektseiten befolgt werden:
 
 Alternativ kann natürlich auch eine vorhandene Installation von Python 3.7 mit den entsprechenden Bibliotheken verwendet werden. Die Installation sollte auch unter Windows analog funktionieren.
 
-#### Ausführung
+### Ausführung
 
 ```
 export PATH="$HOME/anaconda/bin:$PATH"
 In dem heruntergeladenen Ordner: python main.py
 ```
 
-##### Tutorial
+#### Tutorial
 
 Load Image: Erlaubt, ein Bild einzuladen. Für die Nutzung des Generative Adversarial Networks (GAN) sollte ein Bild aus dem Ordner "Faces" geladen werden.
 
@@ -38,11 +38,11 @@ Add (transparent) Sticker: klebt den ausgewählten Sticker auf das rechte Bild.
 
 Save Image: Erlaubt, das rechte Bild abzuspeichern.
 
-##### Erweitert
+#### Erweitert
 
 Anstatt die GUI zu benutzen kann auch direkt in Python gearbeitet werden. Hier stehen auch weitere Operationrn wie der iterierte FGSM-Angriff und die Generation mehrer Täuschender Bilder auf einmal zu Verfügung. Zur Nutzung wird in dem heruntergeladenen Ordner über den Kommandozeilenbefehl Python eine Pythonkonsole geöffnet. Nun muss die entsprechende Klasse importiert werden (from sticker import StickerGenerator bzw. from fgsm inmport FGSM). Anschließend erstellt man mit Instanz = Klassenname(args) eine Instanz der entsprechenden Klasse und führt die gewünschte Methode mit Instanz.Methodenname(args) durch. "args" ist hier ein Platzhalter für die jeweiligen Argumente.
 
-###### Modul fgsm:
+##### Modul fgsm:
 
 FGSM(model=None, cuda=True): Erstellt eine Instanz der FGSM-Klasse, die als Basis für alls FGSM-Angriffe dient. FÜr model kann ein Pytorch-model angegeben werden, welches dann als White Box verwendet wird. Ohne Angabe wird die von uns trainierte White Box verwendet. Cuda bestimmt, ob Cuda genutzt werden soll.
 
@@ -61,7 +61,7 @@ batch_attack_on_label(im_folder,save_folder, target_label, title=""): Wie simple
 
 reload_model(model): Lädt eine neue Whitebox. Das zurücksetzen der Whitebox kann hilfreich sein, wenn diese durch zu viele Korrekturen in einer nicht repräsentativen Region nur noch verzerrte Resultate liefert.
 
-###### Modul sticker:
+##### Modul sticker:
 
 	Die Klasse StickerGenerator kann mit den Werten pixelsize und fringe initialisiert werden (standardeinstellungen: 3, 17), die die Größe der Pixelblöcke, und deren Abstand zum Rand auf beiden Seiten bestimmen. 
 	Dabei sollte die Bildgröße Minus 2 Mal fringe durch Pixelsize teilbar sein.
@@ -76,6 +76,7 @@ reload_model(model): Lädt eine neue Whitebox. Das zurücksetzen der Whitebox ka
 		Als input erhält die Methode die Url des Bildes und eine Ziel-Url zum Abspeichern als strings (in Anführungszeichen). Optional können eine bestimmte Zielklasse ("label", als Zahl codiert, siehe unten), 
 		oder ein bestimmter Sticker als Url ("sticker_url") angegeben werden. Durch setzen des optionalen Argumentes "mode" auf "transparent" kann ein Sticker zudem transparent anstattfüllend aufgeklebt werden.
 
+##### Parameter 
 
 Die Parameter für die FGSM-Attacke befinden sich wie bereits erwähnt im python-dictionary FGSM_SPECS, welches in config.py 	 gespeichert ist. Im folgenden die Default-Einstellungen und eine Erklärung der Parameter:
 
