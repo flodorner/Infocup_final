@@ -81,32 +81,32 @@ fgsm:
 		das verwendete Modell schnell zu wechseln.  
 
 Die Parameter für die FGSM-Attacke befinden sich wie bereits erwähnt im python-dictionary FGSM_SPECS, welches in config.py 	 gespeichert ist. Im folgenden die Default-Einstellungen und eine Erklärung der Parameter:
-"mode": "l_inf" Gibt die Form der Projektion nach jeder Iteration an. "l_inf": Maximumsnorm "l_2": Euklidnorm "simple": keine Projektion. 
+	"mode": "l_inf" Gibt die Form der Projektion nach jeder Iteration an. "l_inf": Maximumsnorm "l_2": Euklidnorm "simple": keine Projektion. 
 
-"bound": 10  Gibt den Maximalwert der gewählten Norm an, auf den der Abstand dann zurück projiziert wird. Für "l_2" empfiehlt sich ein wert um 1000. 
+	"bound": 10  Gibt den Maximalwert der gewählten Norm an, auf den der Abstand dann zurück projiziert wird. Für "l_2" empfiehlt sich ein wert um 1000. 
 
-"magnitude": 1 Gibt das alpha/die Schrittgröße für die FGSM-Iteration an.
+	"magnitude": 1 Gibt das alpha/die Schrittgröße für die FGSM-Iteration an.
 
-"max_fgsm_iterations": 25 Gibt die Maximale Schrittanzahl in der FGSM-Iteration an. 
+	"max_fgsm_iterations": 25 Gibt die Maximale Schrittanzahl in der FGSM-Iteration an. 
 
-"target_threshold": 0.99 Schwellenwert für die Konfidenz. Wenn dieser während der FGSM-Iteration überschritten wird, unterbricht diese und prüft den Abstand zwischen Black- und Whitebox und trainiert dann entweder die Whitebox nach, oder beendet bei Erfolg die Schleife.
+	"target_threshold": 0.99 Schwellenwert für die Konfidenz. Wenn dieser während der FGSM-Iteration überschritten wird, unterbricht diese und prüft den Abstand zwischen Black- und Whitebox und trainiert dann entweder die Whitebox nach, oder beendet bei Erfolg die Schleife.
 
-"fgsm_restart": "last" Bestimmt, ob nach dem adjustieren der Whitebox von vorne ("original") oder mit dem Endergebnis der letzten Iteration ("last") begonnen werden soll.
+	"fgsm_restart": "last" Bestimmt, ob nach dem adjustieren der Whitebox von vorne ("original") oder mit dem Endergebnis der letzten Iteration ("last") begonnen werden soll.
 
-"restart_max_amount": 10 Bestimmt die Maximale Anzahl an Versuchen, die Whitebox zu adjustieren.
+	"restart_max_amount": 10 Bestimmt die Maximale Anzahl an Versuchen, die Whitebox zu adjustieren.
 
-"restart_accuracy_bound": 0.0001 Beträgt der Quadrierte Abstand zwischen Vorhersage von White- und Blackbox am ende einer FGSM-Iterarion weniger als diese Schwelle, wird die Iteration abgebrochen.
+	"restart_accuracy_bound": 0.0001 Beträgt der Quadrierte Abstand zwischen Vorhersage von White- und Blackbox am ende einer FGSM-Iterarion weniger als diese Schwelle, wird die Iteration abgebrochen.
 
-"retrain_mode": "last" Bestimmt, ob nur für die letzte FGSM-Iteration adjustiert werden soll ("last"), oder ob auch die Ergebnisse der vorigen Iterationen einbezogen werden sollen ("full").
+	"retrain_mode": "last" Bestimmt, ob nur für die letzte FGSM-Iteration adjustiert werden soll ("last"), oder ob auch die Ergebnisse der vorigen Iterationen einbezogen werden sollen ("full").
 
-"retrain_lr": 0.00001 Bestimmt die Lerngeschwindigkeit beim Adjustieren. Niedrige werte verlangsamen die Anpassung, hohe führen zu lokaler Überanpassung oder sogar zu schlechterer Konvergenz.
+	"retrain_lr": 0.00001 Bestimmt die Lerngeschwindigkeit beim Adjustieren. Niedrige werte verlangsamen die Anpassung, hohe führen zu lokaler Überanpassung oder sogar zu schlechterer Konvergenz.
 
-"retrain_max_gradient_steps": 10 Bestimmt die Anzahl der Optimierungsschritte beim Adjustieren. Effekte ählich wie bei der Lerngeschwindigkeit, hohe Werte verschlechtern die Konvergenz hier nicht, benötigen aber Zeit.
+	"retrain_max_gradient_steps": 10 Bestimmt die Anzahl der Optimierungsschritte beim Adjustieren. Effekte ählich wie bei der Lerngeschwindigkeit, hohe Werte verschlechtern die Konvergenz hier nicht, benötigen aber Zeit.
 
-"retrain_threshold": 0.0001 Bestimmt den Schwellenwert für den Quadratischen Abstand zwischen der Vorhersage von Black- und Whitebox, an dem das Adjustieren abgebrochen wird.
+	"retrain_threshold": 0.0001 Bestimmt den Schwellenwert für den Quadratischen Abstand zwischen der Vorhersage von Black- und Whitebox, an dem das Adjustieren abgebrochen wird.
 
-"always_save": True Bestimmt, ob Endergebnisse, deren Konfidenz unter target_threshold liegt trotzdem gespeichert werden sollen.
-"print": True Bestimmt, ob Informationen, wie die Konfidenzen bei Zwischenschritten, ausgegeben werden sollen.
+	"always_save": True Bestimmt, ob Endergebnisse, deren Konfidenz unter target_threshold liegt trotzdem gespeichert werden sollen.
+	"print": True Bestimmt, ob Informationen, wie die Konfidenzen bei Zwischenschritten, ausgegeben werden sollen.
 
 		
 Weitere Config-Parameter:
