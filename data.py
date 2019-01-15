@@ -2,11 +2,9 @@ import numpy as np
 import pandas as pd
 import torch
 from torch.utils.data import Dataset
-from torchvision import datasets, transforms, utils
+from torchvision import transforms
 import matplotlib.pyplot as plt
 import csv
-import os
-from tqdm import tqdm
 from config import GTSRB_DIRECTORY, FACES_DIRECTORY, BB_LABELS_DIRECTORY
 
 
@@ -70,7 +68,7 @@ class GTSRB(Dataset):
     def _get_training_data(rootpath):
         train_images = []
         train_labels = []
-        for c in tqdm(range(0, 43)):  # loop over all 43 classes
+        for c in range(0, 43):  # loop over all 43 classes
             images, labels = GTSRB._get_class(rootpath, c)
             train_images += images
             train_labels += labels

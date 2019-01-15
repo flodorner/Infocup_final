@@ -1,9 +1,8 @@
 import torch
 from torch import nn, optim
 import torch.nn.functional as F
-from torch.utils.data import random_split, DataLoader
+from torch.utils.data import DataLoader
 from torchvision import transforms
-from tqdm import tqdm
 from config import GAN_SPECS, FACES_DIRECTORY, GAN_DIRECTORY
 from whitebox import create_whitebox
 if GAN_SPECS['use_faces_dataset']:
@@ -18,7 +17,6 @@ class PretrainedGenerator:
         self.preprocess = transforms.ToTensor()
 
     def perturb_image(self, image):
-        model = G(3).to(DEVICE)
         with torch.no_grad():
             image = self.preprocess(image).to(DEVICE).unsqueeze(0)
             X, _ = self.model(image)
@@ -27,8 +25,6 @@ class PretrainedGenerator:
             X = X * 255
             X = X.detach().cpu().numpy().reshape(64, 64, 3)
         return X
-
-    #def perturb_images(self, ):
 
     @staticmethod
     def create_generator():
@@ -208,7 +204,7 @@ def train(num_epochs, target):
 
     classifier = create_whitebox(DEVICE)
 
-    for epoch in tqdm(range(num_epochs)):
+    for epoch in range(num_epochs):
         generator.train()
         discriminator.train()
         classifier.eval()
