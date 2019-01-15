@@ -2,6 +2,7 @@ import torch
 from torch import nn, optim
 import torch.nn.functional as F
 from torch.utils.data import random_split, DataLoader
+from torchvision import transforms
 from tqdm import tqdm
 from config import GAN_SPECS, FACES_DIRECTORY, GAN_DIRECTORY
 from whitebox import create_whitebox
@@ -21,9 +22,10 @@ class PretrainedGenerator:
 
     def __init__(self):
         self.model = self.create_generator()
+        self.transform = transforms.ToTensor()
 
     def perturb_image(self, image):
-        X, _ = self.model(image)
+        X, _ = self.model(self.transform(image))
         return X
 
     @staticmethod
