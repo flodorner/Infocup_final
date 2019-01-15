@@ -132,6 +132,7 @@ class AdversarialStudio:
             return False
         elif int(self.Label_param.get()) < LABEL_AMOUNT:
             self._refresh_labels()
+            self._add_whitebox_info()
             return True
         else:
             return False
@@ -153,6 +154,7 @@ class AdversarialStudio:
     def _resetlabel(self, string="4"):
         self.Label_param.delete(0, 'end')
         self.Label_param.insert(0, string)
+
 
     def _resetbound(self):
         self.Bound_param.delete(0, 'end')
@@ -231,7 +233,7 @@ class AdversarialStudio:
 
     def _generate_button(self):
         start = np.asarray(self.edit_img_PIL.convert("RGB"))
-        self.edit_img_PIL = self.GAN.perturb_image(start).resize((IMAGE_SIZE, IMAGE_SIZE))
+        self.edit_img_PIL = Image.fromarray(self.GAN.perturb_image(start).astype(np.uint8))
         edit_img = ImageTk.PhotoImage(self.edit_img_PIL.resize((256, 256)))
         self.Edited_image.configure(image=edit_img)
         self.Edited_image.image = edit_img
