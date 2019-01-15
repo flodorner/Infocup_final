@@ -6,7 +6,7 @@ GTSRB_DIRECTORY = 'GTSRB/'
 LABEL_AMOUNT = 43
 IMAGE_SIZE = 64
 WHITEBOX_DIRECTORY = "Models/ResNet.pt"
-GAN_DIRECTORY = "Models/advganGkappa75-perm425_490.0011.pt"
+GAN_DIRECTORY = "Models/Generator.pt"
 BB_LABELS_DIRECTORY = 'BBLabels/'
 
 FGSM_SPECS = {
