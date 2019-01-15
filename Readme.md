@@ -80,24 +80,33 @@ fgsm:
 		wenn das Modell auf den von uns trainierten Stand zurückgesetzt werden soll, gibt es eine reload_model Methode, die das Modell neu lädt. Dieser kann auch ein neues Modell als argument gegeben werden, um
 		das verwendete Modell schnell zu wechseln.  
 
-	Die Parameter für die FGSM-Attacke befinden sich wie bereits erwähnt im python-dictionary FGSM_SPECS, welches in config.py gespeichert ist. Im folgenden die Default-Einstellungen und eine Erklärung der Parameter:
-	"mode": "l_inf" Gibt die Form der Projektion nach jeder Iteration an. "l_inf": Maximumsnorm "l_2": Euklidnorm "simple": keine Projektion. 
-   	"bound": 10  Gibt den Maximalwert der gewählten Norm an, auf den der Abstand dann zurück projiziert wird. Für "l_2" empfiehlt sich ein wert um 1000. 
-   	"magnitude": 1 Gibt das alpha/die Schrittgröße für die FGSM-Iteration an.
-   	"max_fgsm_iterations": 25 Gibt die Maximale Schrittanzahl in der FGSM-Iteration an. 
-    	"target_threshold": 0.99 Schwellenwert für die Konfidenz. Wenn dieser während der FGSM-Iteration überschritten wird, unterbricht diese und prüft den Abstand zwischen Black- und Whitebox und trainiert dann entweder 
-				die Whitebox nach, oder beendet bei Erfolg die Schleife.
+Die Parameter für die FGSM-Attacke befinden sich wie bereits erwähnt im python-dictionary FGSM_SPECS, welches in config.py 	 gespeichert ist. Im folgenden die Default-Einstellungen und eine Erklärung der Parameter:
+"mode": "l_inf" Gibt die Form der Projektion nach jeder Iteration an. "l_inf": Maximumsnorm "l_2": Euklidnorm "simple": keine Projektion. 
 
-   	"fgsm_restart": "last" Bestimmt, ob nach dem adjustieren der Whitebox von vorne ("original") oder mit dem Endergebnis der letzten Iteration ("last") begonnen werden soll.
-    	"restart_max_amount": 10 Bestimmt die Maximale Anzahl an Versuchen, die Whitebox zu adjustieren.
-    	"restart_accuracy_bound": 0.0001 Beträgt der Quadrierte Abstand zwischen Vorhersage von White- und Blackbox am ende einer FGSM-Iterarion weniger als diese Schwelle, wird die Iteration abgebrochen.
+"bound": 10  Gibt den Maximalwert der gewählten Norm an, auf den der Abstand dann zurück projiziert wird. Für "l_2" empfiehlt sich ein wert um 1000. 
 
-   	"retrain_mode": "last" Bestimmt, ob nur für die letzte FGSM-Iteration adjustiert werden soll ("last"), oder ob auch die Ergebnisse der vorigen Iterationen einbezogen werden sollen ("full").
-    	"retrain_lr": 0.00001 Bestimmt die Lerngeschwindigkeit beim Adjustieren. Niedrige werte verlangsamen die Anpassung, hohe führen zu lokaler Überanpassung oder sogar zu schlechterer Konvergenz.
-    	"retrain_max_gradient_steps": 10 Bestimmt die Anzahl der Optimierungsschritte beim Adjustieren. Effekte ählich wie bei der Lerngeschwindigkeit, hohe Werte verschlechtern die Konvergenz hier nicht, benötigen aber Zeit.
-    	"retrain_threshold": 0.0001 Bestimmt den Schwellenwert für den Quadratischen Abstand zwischen der Vorhersage von Black- und Whitebox, an dem das Adjustieren abgebrochen wird.
-    	"always_save": True Bestimmt, ob Endergebnisse, deren Konfidenz unter target_threshold liegt trotzdem gespeichert werden sollen.
-    	"print": True Bestimmt, ob Informationen, wie die Konfidenzen bei Zwischenschritten, ausgegeben werden sollen.
+"magnitude": 1 Gibt das alpha/die Schrittgröße für die FGSM-Iteration an.
+
+"max_fgsm_iterations": 25 Gibt die Maximale Schrittanzahl in der FGSM-Iteration an. 
+
+"target_threshold": 0.99 Schwellenwert für die Konfidenz. Wenn dieser während der FGSM-Iteration überschritten wird, unterbricht diese und prüft den Abstand zwischen Black- und Whitebox und trainiert dann entweder die Whitebox nach, oder beendet bei Erfolg die Schleife.
+
+"fgsm_restart": "last" Bestimmt, ob nach dem adjustieren der Whitebox von vorne ("original") oder mit dem Endergebnis der letzten Iteration ("last") begonnen werden soll.
+
+"restart_max_amount": 10 Bestimmt die Maximale Anzahl an Versuchen, die Whitebox zu adjustieren.
+
+"restart_accuracy_bound": 0.0001 Beträgt der Quadrierte Abstand zwischen Vorhersage von White- und Blackbox am ende einer FGSM-Iterarion weniger als diese Schwelle, wird die Iteration abgebrochen.
+
+"retrain_mode": "last" Bestimmt, ob nur für die letzte FGSM-Iteration adjustiert werden soll ("last"), oder ob auch die Ergebnisse der vorigen Iterationen einbezogen werden sollen ("full").
+
+"retrain_lr": 0.00001 Bestimmt die Lerngeschwindigkeit beim Adjustieren. Niedrige werte verlangsamen die Anpassung, hohe führen zu lokaler Überanpassung oder sogar zu schlechterer Konvergenz.
+
+"retrain_max_gradient_steps": 10 Bestimmt die Anzahl der Optimierungsschritte beim Adjustieren. Effekte ählich wie bei der Lerngeschwindigkeit, hohe Werte verschlechtern die Konvergenz hier nicht, benötigen aber Zeit.
+
+"retrain_threshold": 0.0001 Bestimmt den Schwellenwert für den Quadratischen Abstand zwischen der Vorhersage von Black- und Whitebox, an dem das Adjustieren abgebrochen wird.
+
+"always_save": True Bestimmt, ob Endergebnisse, deren Konfidenz unter target_threshold liegt trotzdem gespeichert werden sollen.
+"print": True Bestimmt, ob Informationen, wie die Konfidenzen bei Zwischenschritten, ausgegeben werden sollen.
 
 		
 Weitere Config-Parameter:
@@ -105,49 +114,52 @@ Weitere Config-Parameter:
 	STICKER_DIRECTORY = "Quickstick" Superverzeichnis für das Abspeichern der Sticker.
 	LABEL_AMOUNT = 43 Anzahl der Klassen
 	IMAGE_SIZE = 64 Größe der Bilder in Pixeln
+	WHITEBOX_DIRECTORY = "Models/ResNet.pt" Speicherort des Modells für die White Box
+	
 
 
 Liste der Klassen und der zugordneten numerischen Label: (CLASSNAMEDICT)
-		 'Zulässige Höchstgeschwindigkeit (20)': 0,
-  		 'Zulässige Höchstgeschwindigkeit (30)': 1,
-                 'Zulässige Höchstgeschwindigkeit (50)': 2,
-                 'Zulässige Höchstgeschwindigkeit (60)': 3,
-                 'Zulässige Höchstgeschwindigkeit (70)': 4,
-                 'Zulässige Höchstgeschwindigkeit (80)': 5,
-                 'Ende der Geschwindigkeitsbegrenzung (80)': 6,
-                 'Zulässige Höchstgeschwindigkeit (100)': 7,
-                 'Zulässige Höchstgeschwindigkeit (120)': 8,
-                 'Überholverbot für Kraftfahrzeuge aller Art': 9,
-                 'Überholverbot für Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5t': 10,
-                 'Einmalige Vorfahrt': 11,
-                 'Vorfahrt': 12,
-                 'Vorfahrt gewähren': 13,
-                 'Stoppschild': 14,
-                 'Verbot für Fahrzeuge aller Art': 15,
-                 'Verbot für Kraftfahrzeuge mit einer zulässigen Gesamtmasse von 3,5t': 16,
-                 'Verbot der Einfahrt': 17,
-                 'Gefahrenstelle': 18,
-                 'Kurve (links)': 19,
-                 'Kurve (rechts)': 20,
-                 'Doppelkurve (zunächst links)': 21,
-                 'Unebene Fahrbahn': 22,
-                 'Schleudergefahr bei Nässe oder Schmutz': 23,
-                 'Fahrbahnverengung (rechts)': 24,
-                 'Baustelle': 25,
-                 'Lichtzeichenanlage': 26,
-                 'Fußgänger': 27,
-                 'Kinder': 28,
-                 'Fahrradfahrer': 29,
-                 'Schnee- oder Eisglätte': 30,
-                 'Wildwechsel': 31,
-                 'Ende aller Streckenverbote': 32,
-                 'Ausschließlich rechts': 33,
-                 'Ausschließlich links': 34,
-                 'Ausschließlich geradeaus': 35,
-                 'Ausschließlich geradeaus oder rechts': 36,
-                 'Ausschließlich geradeaus oder links': 37,
-                 'Rechts vorbei': 38,
-                 'Links vorbei': 39,
-                 'Kreisverkehr': 40,
-                 'Ende des Überholverbotes für Kraftfahrzeuge aller Art': 41,
-                 'Ende des Überholverbotes für Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5t': 42
+
+	 'Zulässige Höchstgeschwindigkeit (20)': 0,
+	 'Zulässige Höchstgeschwindigkeit (30)': 1,
+	 'Zulässige Höchstgeschwindigkeit (50)': 2,
+	 'Zulässige Höchstgeschwindigkeit (60)': 3,
+	 'Zulässige Höchstgeschwindigkeit (70)': 4,
+	 'Zulässige Höchstgeschwindigkeit (80)': 5,
+	 'Ende der Geschwindigkeitsbegrenzung (80)': 6,
+	 'Zulässige Höchstgeschwindigkeit (100)': 7,
+	 'Zulässige Höchstgeschwindigkeit (120)': 8,
+	 'Überholverbot für Kraftfahrzeuge aller Art': 9,
+	 'Überholverbot für Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5t': 10,
+	 'Einmalige Vorfahrt': 11,
+	 'Vorfahrt': 12,
+	 'Vorfahrt gewähren': 13,
+	 'Stoppschild': 14,
+	 'Verbot für Fahrzeuge aller Art': 15,
+	 'Verbot für Kraftfahrzeuge mit einer zulässigen Gesamtmasse von 3,5t': 16,
+	 'Verbot der Einfahrt': 17,
+	 'Gefahrenstelle': 18,
+	 'Kurve (links)': 19,
+	 'Kurve (rechts)': 20,
+	 'Doppelkurve (zunächst links)': 21,
+	 'Unebene Fahrbahn': 22,
+	 'Schleudergefahr bei Nässe oder Schmutz': 23,
+	 'Fahrbahnverengung (rechts)': 24,
+	 'Baustelle': 25,
+	 'Lichtzeichenanlage': 26,
+	 'Fußgänger': 27,
+	 'Kinder': 28,
+	 'Fahrradfahrer': 29,
+	 'Schnee- oder Eisglätte': 30,
+	 'Wildwechsel': 31,
+	 'Ende aller Streckenverbote': 32,
+	 'Ausschließlich rechts': 33,
+	 'Ausschließlich links': 34,
+	 'Ausschließlich geradeaus': 35,
+	 'Ausschließlich geradeaus oder rechts': 36,
+	 'Ausschließlich geradeaus oder links': 37,
+	 'Rechts vorbei': 38,
+	 'Links vorbei': 39,
+	 'Kreisverkehr': 40,
+	 'Ende des Überholverbotes für Kraftfahrzeuge aller Art': 41,
+	 'Ende des Überholverbotes für Kraftfahrzeuge mit einer zulässigen Gesamtmasse über 3,5t': 42
