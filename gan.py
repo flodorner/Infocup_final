@@ -18,15 +18,18 @@ class PretrainedGenerator:
         self.model = self.create_generator()
         self.model.eval()
         self.preprocess = transforms.ToTensor()
-        self.postprocess = transforms.ToPILImage()
 
     def perturb_image(self, image):
         with torch.no_grad():
-            image = self.preprocess(image).to(DEVICE)
-            X, _ = self.model(image.unsqueeze(0))
-            X = X.squeeze(0).cpu().detach().numpy()
-            X = np.transpose(X, (1, 2, 0))
+            image = self.preprocess(image).to(DEVICE).unsqueeze(0)
+            X, _ = self.model(image)
+            print(X)
+            X = X.permute(0, 2, 3, 1)
+            X = X.contiguous().view(1, 3, 64, 64)
             X = X * 255
+            classifier = create_whitebox(DEVICE)
+            classifier.eval()
+            print(classifier(X).squeeze()[25].item())
         return X
 
     @staticmethod

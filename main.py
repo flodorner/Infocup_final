@@ -173,7 +173,6 @@ class AdversarialStudio:
 
         text = str("%.2f" % self.Generator.get_label(im, int(self.Label_param.get())))
         self.Whitebox_text.configure(text=text)
-        print(self.Generator.preview_im("GUI/temp.png"))
 
     def _refresh_labels(self):
         conf = self._get_orig_conf()
