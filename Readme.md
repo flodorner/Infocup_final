@@ -1,5 +1,5 @@
 ## InformatiCup Abgabe Florian Dorner und Julian Stastny
-__Since the server for queries to the blackboc seems to be offline now and the program relied on label feedback from the server, the program is currently not working as intended and needs some slight modifications to do so again.__
+__Since the server for queries to the blackbox seems to be offline now and the program relied on label feedback from the server, the program is currently not working as intended and needs some slight modifications to do so again.__
 
 Die Software basiert auf Python und besteht aus einer GUI zur einfachen Erstellung 
 von Bildern zur Täuschung des gegebenen neuronalen Netzes sowie einigen Funktionen zur automatischen 
